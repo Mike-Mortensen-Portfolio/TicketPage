@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SKP.TicketPage.Domain.Entities.Comment">
+    <Position X="3.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAgAAgAACgAAAAQAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>Entities\Comment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Domain.Entities.Department">
+    <Position X="0.5" Y="3.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAgAAAAAAAAAQCCAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Department.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Domain.Entities.Employee">
+    <Position X="5.75" Y="0.5" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAgAAAAAAAAAAAEAAAQAAgAAAAAAAAIAg=</HashCode>
+      <FileName>Entities\Employee.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Domain.Entities.EmployeeTicket">
+    <Position X="3.75" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACAAAAAAABAAAAAAAAAAAAAAAQAAg=</HashCode>
+      <FileName>Entities\EmployeeTicket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Domain.Entities.Ticket">
+    <Position X="7.75" Y="0.5" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="SKP.TicketPage.Domain.Entities.Ticket.TicketStatus">
+        <TypeIdentifier>
+          <NewMemberFileName>Entities\Ticket.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SKP.TicketPage.Domain.Entities.Ticket.TicketPriority">
+        <TypeIdentifier>
+          <NewMemberFileName>Entities\Ticket.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAUAAAgoEAEgAAAAUAgEAAAAAAAAAAAAEAAIAA=</HashCode>
+      <FileName>Entities\Ticket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Domain.TicketPageContext">
+    <Position X="0.5" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAACAAAAAAGAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>TicketPageContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Domain.Entities.Role">
+    <Position X="5.75" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Role.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Domain.Entities.EmployeeRole">
+    <Position X="5.75" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\EmployeeRole.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,39 @@
+﻿@using SKP.TicketPage.Services;
+@using System.Security.Claims;
+@inject ITicketPageService service
+
+<ul class="navbar-nav">
+    @if (service.Employee.IsSignedIn(User))
+    {
+        int id = User.GetID();
+
+        <!--Vises når brugeren er logget ind-->
+        <li class="nav-item">
+            <a asp-area="Identity" asp-page="/Account/UserPage" asp-route-id="@id.ToString()" class="nav-link btn btn-link cust-text-secondary">
+                Hej @{
+                    IEmployee employee = await service.Employee.GetByIDAsync(id);
+                }
+
+                @employee.FirstName@((User.IsInRole(RoleHelper.DEVELOPER))?(" (Dev)"):(string.Empty))!
+            </a>
+        </li>
+
+        <!--Log ud knap-->
+
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@((service.Employee.IsExternalUser(User).Result)?(Url.Page("/", new { area = "" })):(Url.Page("/index")))" method="post">
+                <button type="submit" class="nav-link btn btn-link cust-text-secondary">
+                    <span class="bi bi-box-arrow-left"></span> Log ud
+                </button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <!--Vises når brugeren IKKE er logget ind-->
+        <!--Login knap-->
+        <li class="nav-item">
+            <a class="nav-link cust-text-secondary" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Page("/Account/UserPage", new { area = "Identity" })">Log ind <span class="bi bi-box-arrow-in-right"></span></a>
+        </li>
+    }
+</ul>

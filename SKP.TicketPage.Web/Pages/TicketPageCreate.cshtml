@@ -1,0 +1,12 @@
+﻿@page
+@using SKP.TicketPage.Services
+@model SKP.TicketPage.Web.Pages.TicketPageCreateModel
+@{
+    ViewData["Title"] = "Ny Opgave";
+}
+<partial name="Tickets/_TicketFormPartial" model="@(new Shared.Tickets.Models.TicketFormModel {Header = "Ny Opgave", Input = Model.Input, LockFlag = Shared.Tickets.Models.TicketFormModel.Lock.Status})" />
+
+@section Scripts{
+<script src="~/RichText/build/ckeditor.js"></script>
+<script src="~/RichText/editorEmbed.js"></script>
+}

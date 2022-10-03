@@ -1,0 +1,107 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>aspnet-SKP.TicketPage.Web-A176B83A-891B-4952-8258-8C45908FEE45</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Identity\Data\**" />
+    <Content Remove="Areas\Identity\Data\**" />
+    <EmbeddedResource Remove="Areas\Identity\Data\**" />
+    <None Remove="Areas\Identity\Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="5.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.13" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SKP.TicketPage.Domain\SKP.TicketPage.Domain.csproj" />
+    <ProjectReference Include="..\SKP.TicketPage.Services\SKP.TicketPage.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\RichText\build\ckeditor.js" />
+    <None Include="wwwroot\RichText\build\ckeditor.js.map" />
+    <None Include="wwwroot\RichText\build\translations\af.js" />
+    <None Include="wwwroot\RichText\build\translations\ar.js" />
+    <None Include="wwwroot\RichText\build\translations\ast.js" />
+    <None Include="wwwroot\RichText\build\translations\az.js" />
+    <None Include="wwwroot\RichText\build\translations\bg.js" />
+    <None Include="wwwroot\RichText\build\translations\bs.js" />
+    <None Include="wwwroot\RichText\build\translations\ca.js" />
+    <None Include="wwwroot\RichText\build\translations\cs.js" />
+    <None Include="wwwroot\RichText\build\translations\de-ch.js" />
+    <None Include="wwwroot\RichText\build\translations\de.js" />
+    <None Include="wwwroot\RichText\build\translations\el.js" />
+    <None Include="wwwroot\RichText\build\translations\en-au.js" />
+    <None Include="wwwroot\RichText\build\translations\en-gb.js" />
+    <None Include="wwwroot\RichText\build\translations\en.js" />
+    <None Include="wwwroot\RichText\build\translations\eo.js" />
+    <None Include="wwwroot\RichText\build\translations\es.js" />
+    <None Include="wwwroot\RichText\build\translations\et.js" />
+    <None Include="wwwroot\RichText\build\translations\eu.js" />
+    <None Include="wwwroot\RichText\build\translations\fa.js" />
+    <None Include="wwwroot\RichText\build\translations\fi.js" />
+    <None Include="wwwroot\RichText\build\translations\fr.js" />
+    <None Include="wwwroot\RichText\build\translations\gl.js" />
+    <None Include="wwwroot\RichText\build\translations\gu.js" />
+    <None Include="wwwroot\RichText\build\translations\he.js" />
+    <None Include="wwwroot\RichText\build\translations\hi.js" />
+    <None Include="wwwroot\RichText\build\translations\hr.js" />
+    <None Include="wwwroot\RichText\build\translations\hu.js" />
+    <None Include="wwwroot\RichText\build\translations\id.js" />
+    <None Include="wwwroot\RichText\build\translations\it.js" />
+    <None Include="wwwroot\RichText\build\translations\ja.js" />
+    <None Include="wwwroot\RichText\build\translations\km.js" />
+    <None Include="wwwroot\RichText\build\translations\kn.js" />
+    <None Include="wwwroot\RichText\build\translations\ko.js" />
+    <None Include="wwwroot\RichText\build\translations\ku.js" />
+    <None Include="wwwroot\RichText\build\translations\lt.js" />
+    <None Include="wwwroot\RichText\build\translations\lv.js" />
+    <None Include="wwwroot\RichText\build\translations\nb.js" />
+    <None Include="wwwroot\RichText\build\translations\ne.js" />
+    <None Include="wwwroot\RichText\build\translations\nl.js" />
+    <None Include="wwwroot\RichText\build\translations\no.js" />
+    <None Include="wwwroot\RichText\build\translations\oc.js" />
+    <None Include="wwwroot\RichText\build\translations\pl.js" />
+    <None Include="wwwroot\RichText\build\translations\pt-br.js" />
+    <None Include="wwwroot\RichText\build\translations\pt.js" />
+    <None Include="wwwroot\RichText\build\translations\ro.js" />
+    <None Include="wwwroot\RichText\build\translations\ru.js" />
+    <None Include="wwwroot\RichText\build\translations\si.js" />
+    <None Include="wwwroot\RichText\build\translations\sk.js" />
+    <None Include="wwwroot\RichText\build\translations\sl.js" />
+    <None Include="wwwroot\RichText\build\translations\sq.js" />
+    <None Include="wwwroot\RichText\build\translations\sr-latn.js" />
+    <None Include="wwwroot\RichText\build\translations\sr.js" />
+    <None Include="wwwroot\RichText\build\translations\sv.js" />
+    <None Include="wwwroot\RichText\build\translations\th.js" />
+    <None Include="wwwroot\RichText\build\translations\tk.js" />
+    <None Include="wwwroot\RichText\build\translations\tr.js" />
+    <None Include="wwwroot\RichText\build\translations\tt.js" />
+    <None Include="wwwroot\RichText\build\translations\ug.js" />
+    <None Include="wwwroot\RichText\build\translations\uk.js" />
+    <None Include="wwwroot\RichText\build\translations\uz.js" />
+    <None Include="wwwroot\RichText\build\translations\vi.js" />
+    <None Include="wwwroot\RichText\build\translations\zh-cn.js" />
+    <None Include="wwwroot\RichText\build\translations\zh.js" />
+    <None Include="wwwroot\RichText\src\ckeditor.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\" />
+  </ItemGroup>
+
+</Project>

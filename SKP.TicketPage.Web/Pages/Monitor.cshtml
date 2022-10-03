@@ -1,0 +1,20 @@
+﻿@page "{setting=all}/{value=0}"
+@using SKP.TicketPage.Services
+@model SKP.TicketPage.Web.Pages.MonitorModel
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "_MonitorLayout";
+}
+
+@if (Model.Settings.ShowAll)
+{
+    <partial name="Monitor/_MonitorAllPartial" model="Model.Settings.Index" />
+}
+else
+{
+    <partial name="Monitor/_MonitorSinglePartial" model="Model.Settings.DepartmentID" />
+}
+
+@section Scripts{
+<script src="~/js/AutoScroll.js"></script>
+}

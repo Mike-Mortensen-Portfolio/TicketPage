@@ -1,0 +1,43 @@
+﻿@page
+@using SKP.TicketPage.Services
+@inject ITicketPageService service
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Registrer";
+}
+
+<h1>@ViewData["Title"]</h1>
+<form method="post" asp-page-handler="Confirmation">
+    <div class="form-group">
+        <label asp-for="Input.Email" class="control-label"></label>
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+        <input asp-for="Input.Email" readonly class="form-control cust-border-box" />
+
+        <label asp-for="Input.FirstName" class="control-label">Fornavn</label>
+        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+        <input asp-for="Input.FirstName" readonly class="form-control cust-border-box" />
+
+        <label asp-for="Input.LastName" class="control-label">Efternavn</label>
+        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+        <input asp-for="Input.LastName" readonly class="form-control cust-border-box" />
+
+
+        <label asp-for="Input.DepartmentID" class="control-label">Afdeling</label>
+        @{
+            IReadOnlyList<IDepartment> departments = await service.Department.GetAllAsync();
+        }
+        <span asp-validation-for="Input.DepartmentID" class="text-danger"></span>
+        <select asp-for="Input.DepartmentID" class="form-control cust-border-box">
+            <option value="-1">Vælg Afdeling</option>
+            @if (departments != null && departments.Count > 0)
+            {
+                foreach (var department in departments)
+                {
+                    <option value="@department.ID">@department.Name</option>
+                }
+            }
+        </select>
+
+    </div>
+    <button type="submit" class="btn btn-success border cust-border-box">Registrer</button>
+</form>

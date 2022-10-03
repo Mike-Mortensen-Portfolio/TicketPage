@@ -1,0 +1,10 @@
+﻿@page
+@using SKP.TicketPage.Services
+@inject ITicketPageService service
+@model SKP.TicketPage.Web.Pages.TicketOverviewModel
+@{
+    ViewData["Title"] = "Opgave Oversigt";
+}
+<h1 class="text-center">Opgaveoversigt</h1>
+<hr />
+<partial name="Tickets/_TicketListPartial" model="@(new SKP.TicketPage.Web.Pages.Shared.Tickets.Models.TicketListModel {Tickets = Model.Tickets, FilterOptions = Model.FilterOptions, CurrentPage = Model.CurrentPage, PageSize = Model.PageSize })" />

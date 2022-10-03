@@ -1,0 +1,39 @@
+﻿@page
+@using SKP.TicketPage.Services
+@model SKP.TicketPage.Web.Pages.AdminPanelModel
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<h1 class="text-center">Admin Panel</h1>
+<hr />
+<div class="row">
+    <div class=col-2></div>
+    <div class="col-8" align="center">
+        <table class="table-borderless" style="margin:auto; width:50% !important;">
+            <tr class="justify-content-center">
+                <th class="m-0 p-0">
+                    <a asp-page="EmployeeOverview" class="m-0 p-0 nav-link text-dark"><h1 class="m-0 p-0 bi bi-person-lines-fill text-center"></h1><p style="font-size:12px;" class="m-0 p-0 text-center font-weight-bold">Brugere</p></a>
+                </th>
+                @if (User.IsSuperUser())
+                {
+                    <th class="m-0 p-0">
+                        <a asp-page="DepartmentOverview" class="m-0 p-0 nav-link text-dark"><h1 class="m-0 p-0 bi bi-briefcase-fill text-center"></h1><p style="font-size:12px;" class="m-0 p-0 text-center font-weight-bold">Afdelinger</p></a>
+                    </th>
+                }
+
+                <th class="m-0 p-0">
+                    <a asp-page="TicketOverview" class="m-0 p-0 nav-link text-dark"><h1 class="m-0 p-0 bi bi-ticket-fill text-center"></h1><p style="font-size:12px;" class="m-0 p-0 text-center font-weight-bold">Opgaver</p></a>
+                </th>
+
+                @if (User.IsInRole(RoleHelper.DEVELOPER))
+                {
+                    <th class="m-0 p-0">
+                        <a asp-page="DeveloperAccess/LogOverview" class="m-0 p-0 nav-link text-dark"><h1 class="m-0 p-0 bi bi-card-checklist text-center"></h1><p style="font-size:12px;" class="m-0 p-0 text-center font-weight-bold">Logs</p></a>
+                    </th>
+                }
+            </tr>
+        </table>
+    </div>
+    <div class=col-2></div>
+</div>

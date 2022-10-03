@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SKP.TicketPage.Services.CommentRepository">
+    <Position X="5" Y="8.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAEgAAAAAAAAAAAAAAgAAAEAAACAgAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\CommentRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SKP.TicketPage.Services.DepartmentRepository">
+    <Position X="8.75" Y="8.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAEgAAAAAAAAAAAAAAgAAAEAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\DepartmentRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SKP.TicketPage.Services.EmployeeManager">
+    <Position X="12.5" Y="8.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAEgBBAAAAAAAAAAAAhAAAEQAAAAgAgAAACAAACAAAA=</HashCode>
+      <FileName>Repositories\EmployeeManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SKP.TicketPage.Services.RepositoryBase&lt;T&gt;">
+    <Position X="10.75" Y="5.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAAAQAAAAAAAAgAAAEAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\RepositoryBase{T}.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SKP.TicketPage.Services.TicketRepository">
+    <Position X="16.25" Y="8.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAEgAAAAAAAAAAAAAAgAAAEQAACAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\TicketRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

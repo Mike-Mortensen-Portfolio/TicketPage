@@ -1,0 +1,214 @@
+﻿@using SKP.TicketPage.Services
+@inject ITicketPageService service
+@model Tickets.Models.TicketFormModel
+@{
+}
+<form method="post" asp-page-handler="ConfirmTicketForm">
+    <!--Header-->
+    <table class="m-0 p-0 table table-borderless">
+        <thead>
+            <tr>
+                <th style="vertical-align:middle;" class="p-0 col-10">
+                    <h1 style="word-break:break-all;" class="p-0">
+                        @(Model.Header ?? string.Empty)
+                        @if (User.IsInRole(RoleHelper.DEVELOPER) && Model.Input.ID > 0)
+                        {
+                            <span style="vertical-align:middle; font-size:25px;" class="m-0 ml-1 p-0 pl-1 pr-1 text-center border cust-rounded cust-border-tertiary cust-tertiary cust-text-secondary">@Model.Input.ID</span>
+                        }
+                    </h1>
+                </th>
+                @if (!Model.HideControls)
+                {
+                    <th style="vertical-align:middle;" class="p-0 col-1"><a class="form-control btn btn-success text-white border cust-border-box" asp-page="/TicketPageEdit" asp-route-id="@Model.Input.ID">Ret</a></th>
+                    @if (Model.Input.Status == ITicket.TicketStatus.Inbound)
+                    {
+                        <th style="vertical-align:middle;" class="p-0 col-1"><a class="form-control btn btn-danger text-white border cust-border-box" asp-page="/TicketPageDelete" asp-route-id="@Model.Input.ID">Slet</a></th>
+                    }
+                }
+            </tr>
+        </thead>
+    </table>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <!--Ticket Details-->
+    <table class="m-0 p-0 table table-borderless border-top border-left border-right cust-border-tertiary">
+        <thead style="font-size:13px;" class="text-center">
+            <tr>
+                <th style="vertical-align:middle;" class="col-3">
+                    @if (!Model.Readonly && !Model.LockHelper.DepartmentLocked(Model.LockFlag))
+                    {
+                        IReadOnlyList<IDepartment> departments = await service.Department.GetAllAsync();
+                        <select asp-for="Input.DepartmentID" class="form-control cust-border-box">
+                            <option value="-1">Vælg afdeling</option>
+                            @if (departments != null && departments.Count > 0)
+                            {
+                                foreach (var department in departments)
+                                {
+                                    <option value="@department.ID">@((User.IsInRole(RoleHelper.DEVELOPER))?($"ID: {department.ID} | "):(string.Empty))@department.Name</option>
+                                }
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="Input.DepartmentID" />
+                        <strong>Afdeling:</strong> @((await Model.Input.GetDepartmentAsync()).Name)
+                    }
+
+                </th>
+                <!--Ticket Number-->
+                <th style="vertical-align:middle;" class="p-0 col-5">
+                    <strong class="p-0">Sagsnummer:</strong> <span>@((!string.IsNullOrWhiteSpace(Model.Input.TicketNumber))?(Model.Input.GetTicketNumber()):($"XX{DateTime.Now:yyMMdd}-XXX"))</span>
+                </th>
+                @{
+                    //  Color Picker for Priority and Status
+                    string priorityColor = string.Empty;
+                    string statusColor = string.Empty;
+                    if (Model.Readonly || Model.LockHelper.StatusLocked(Model.LockFlag) || Model.LockHelper.PriorityLocked(Model.LockFlag))
+                    {
+                        priorityColor = ITicket.Helper.TicketPrioritySwitch(Model.Input.Priority, new string[] { "cust-text-sblue", "cust-text-pyellow", "cust-text-pred" });
+                        statusColor = ITicket.Helper.TicketStatusSwitch(Model.Input.Status, new string[] { "cust-text-pyellow", "cust-text-pgreen", "cust-text-sblue", "cust-text-tertiary", string.Empty, "cust-text-pred" });
+                    }
+                }
+                <!--Status-->
+                <th style="vertical-align:middle;" class="col-2">
+                    @if (!Model.Readonly && !Model.LockHelper.StatusLocked(Model.LockFlag))
+                    {
+                        string[] statusValues = { "cust-text-pyellow", "cust-text-pgreen", "cust-text-sblue", "cust-text-tertiary", "cust-text-primary", "cust-text-pred" };
+                        <select onchange="matchClass(this, 'form-control cust-border-box', ['cust-text-pyellow', 'cust-text-pgreen', 'cust-text-sblue', 'cust-text-tertiary', 'cust-text-primary', 'cust-text-pred'])" asp-for="Input.Status" class="form-control cust-border-box @ITicket.Helper.TicketStatusSwitch(Model.Input.Status, statusValues)">
+                            <option class="cust-text-primary" value="-1">Vælg status</option>
+                            @{
+                                var statusDisplayNames = ITicket.Helper.GetStatusDisplayNames();
+                                int lowerLimit = ((User.IsSuperUser()) ? ((int)ITicket.TicketStatus.Inbound) : ((int)ITicket.TicketStatus.Ongoing));
+                                int upperLimit = ((User.IsSuperUser()) ? ((int)ITicket.TicketStatus.Completed) : ((int)ITicket.TicketStatus.Paused));
+                                for (var i = lowerLimit; i <= upperLimit; i++)
+                                {
+                                //  Colors the option text in the dropdown
+                                    <option class="@ITicket.Helper.TicketStatusSwitch((ITicket.TicketStatus)i, statusValues)" value="@i">@statusDisplayNames[i]</option>
+                                }
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <strong>Status:</strong> <span class="@statusColor">@Model.Input.Status.GetDisplayName()</span>
+                    }
+                </th>
+                <!--Priority-->
+                <th class="col-2">
+                    @if (!Model.Readonly && !Model.LockHelper.PriorityLocked(Model.LockFlag))
+                    {
+                        string[] priorityValues = { "cust-text-sblue", "cust-text-pyellow", "cust-text-pred" };
+                        <select onchange="matchClass(this, 'form-control cust-border-box', ['cust-text-sblue', 'cust-text-pyellow', 'cust-text-pred'])" asp-for="Input.Priority" class="form-control cust-border-box @ITicket.Helper.TicketPrioritySwitch(Model.Input.Priority, priorityValues)">
+                            <option value="-1">Vælg prioritet</option>
+                            @{
+                                var priorityDisplayNames = ITicket.Helper.GetPriorityDisplayNames();
+                                for (var i = 0; i < priorityDisplayNames.Length; i++)
+                                {
+                                //  Colors the option text in the dropdown
+                                    <option class="@ITicket.Helper.TicketPrioritySwitch((ITicket.TicketPriority)i,priorityValues)" value="@i">@priorityDisplayNames[i]</option>
+                                }
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <strong>Prioritet:</strong> <span class="@priorityColor">@Model.Input.Priority.GetDisplayName()</span>
+                    }
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+    @if (!Model.Readonly)
+    {
+        <!--Input Title-->
+        <table class="m-0 p-0 table table-borderless">
+            <thead>
+                <tr>
+                    @if (!Model.LockHelper.TitleLocked(Model.LockFlag))
+                    {
+                        <th class="p-0">
+                            <input class="form-control border-bottom-0 cust-border-tertiary cust-border-box" asp-for="Input.Title" placeholder="Titel..." />
+                        </th>
+                    }
+                </tr>
+            </thead>
+        </table>
+    }
+
+    <!--Description-->
+    @if (!Model.Readonly && !Model.LockHelper.DescriptionLocked(Model.LockFlag))
+    {
+        <input asp-for="Input.Description" type="hidden" id="editorData" />
+
+        <div style="height:400px; max-height:400px; padding: 0px 12px; word-break:break-all;" class="form-control border cust-border-tertiary cust-border-box editor" tabindex="0">
+            @Html.Raw(Model.Input?.Description)
+        </div>
+    }
+    else
+    {
+        <div style="overflow:auto; height:400px; max-height:400px; padding: 6px 12px; word-break:break-all;" class="form-control border cust-border-tertiary cust-border-box">@Html.Raw(Model.Input.Description)</div>
+    }
+
+    <table class="m-0 p-0 table table-borderless">
+        <thead>
+            <tr>
+                <!--Author-->
+                @if (Model.Input != null)
+                {
+                    <th style="vertical-align:middle;" class="m-0 p-0 col-@((Model.Readonly)?("8"):("4"))">
+                        @{
+                            IEmployee author = await service.Employee.GetByIDAsync(Model.Input.AuthorID);
+                        }
+
+                        @if (author != null)
+                        {
+                            <p style="font-size:12px;" class="m-0 form-control border-0 font-italic cust-secondary">Oprettet af <a href="@($"/Identity/Account/UserPage/{author.ID}")"> @((User.IsInRole(RoleHelper.DEVELOPER))?($"ID: {author.ID} |"):(string.Empty)) @author.FirstName @author.LastName</a> d. @Model.Input.DateOfCreation.ToString("dd-MM-yyyy HH:mm")</p>
+                        }
+                    </th>
+                }
+                <!--Start Date-->
+                @if (!Model.Readonly && !Model.LockHelper.StartDateLocked(Model.LockFlag))
+                {
+                    <th style="vertical-align:middle;" class="pl-0 col-2">
+                        <label class="m-0 p-0">Start Dato: </label>
+                    </th>
+                }
+                <th style="vertical-align:middle;" class="m-0 p-0 col-2">
+                    @if (!Model.Readonly && !Model.LockHelper.StartDateLocked(Model.LockFlag))
+                    {
+                        <input class="form-control cust-border-box" type="date" asp-for="Input.StartDate" />
+                    }
+                    else
+                    {
+                        <p style="font-size:12px;" class="m-0 form-control border-0 font-italic cust-secondary"><strong>Start Dato:</strong> @Model.Input.StartDate?.ToShortDateString()</p>
+                    }
+                </th>
+                <!--End Date-->
+                @if (!Model.Readonly && !Model.LockHelper.EndDateLocked(Model.LockFlag))
+                {
+                    <th style="vertical-align:middle;" class="col-2">
+                        <label class="m-0 p-0">Deadline: </label>
+                    </th>
+                }
+                <th style="vertical-align:middle;" class="m-0 p-0 col-2">
+                    @if (!Model.Readonly && !Model.LockHelper.EndDateLocked(Model.LockFlag))
+                    {
+                        <input class="form-control cust-border-box" type="date" asp-for="Input.EndDate" />
+                    }
+                    else
+                    {
+                        <p style="font-size:12px;" class="m-0 form-control border-0 font-italic cust-secondary"><strong>Deadline:</strong> @Model.Input.EndDate?.ToShortDateString()</p>
+                    }
+                </th>
+            </tr>
+        </thead>
+    </table>
+
+    @if (!Model.Readonly)
+    {
+        <button id="submit" class="form-control btn btn-success cust-border-box">Bekræft</button>
+    }
+</form>

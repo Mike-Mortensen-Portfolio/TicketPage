@@ -1,0 +1,303 @@
+﻿@using TicketPage.Services
+@inject ITicketPageService service
+@model Tickets.Models.TicketListModel
+@{
+}
+
+<form method="post">
+    <partial name="Misc/_ConfirmationWindowPartial" model="@(new Shared.Misc.Models.ConfirmationWindowModel {Hide = true, IsWarning = true, AcceptHandler = "TicketDelete", DataInputName = "TicketID", Header = "Fjern Opgave?", SubHeader = "Opgaven vil blive fjernet permanent!"})" />
+</form>
+
+<!--Header-->
+<table class="m-0 mb-1 p-0 table table-borderless">
+    <thead>
+        <tr class="m-0 p-0">
+            <th class="m-0 p-0 col-11"><h3 class="font-weight-bold">@(Model.Header ?? "")</h3></th>
+            <!--Create button-->
+            @if (!Model.HideCreateButton)
+            {
+                <th class="m-0 p-0 col-1 text-center"><a class="w-100 h-100 btn btn-success text-white cust-border-box" asp-page="/TicketPageCreate">Opret</a></th>
+            }
+        </tr>
+    </thead>
+</table>
+<form method="post" asp-page-handler="@Model.FilterHandler">
+    @if (!Model.HideFilter)
+    {
+        <!--Filter-->
+        <table class="m-0 p-0 table table-borderless">
+            <thead>
+                <tr>
+                    <th style="vertical-align:middle;" class="m-0 p-0 col-1 text-center">Filter:</th>
+                    <th class="m-0 p-0 col-3 text-center">
+                        @{
+                            <input id="@($"{Model.FilterPropertyName}_SearchKey")" name="@($"{Model.FilterPropertyName}.SearchKey")" class="form-control cust-border-box" type="text" placeholder="Søg..." value="@(Model.FilterOptions?.SearchKey)" />
+                        }
+                    </th>
+                    <th class="m-0 p-0 col-3 text-center">
+                        @{
+                            IReadOnlyList<IDepartment> departments = await service.Department.GetAllAsync();
+                            <select id="@($"{Model.FilterPropertyName}_DepartmentID")" name="@($"{Model.FilterPropertyName}.DepartmentID")" class="form-control cust-border-box">
+                                <option value="-1">Afdeling</option>
+                                @if (departments != null && departments.Count > 0)
+                                {
+                                    foreach (var department in departments)
+                                    {
+                                        if (Model.FilterOptions != null && Model.FilterOptions.DepartmentID == department.ID)
+                                        {
+                                            <option selected value="@department.ID">@((User.IsInRole(RoleHelper.DEVELOPER))?($" ID: {department.ID} | "):(string.Empty))@department.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@department.ID">@((User.IsInRole(RoleHelper.DEVELOPER))?($" ID: {department.ID} | "):(string.Empty))@department.Name</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        }
+                    </th>
+                    <th class="m-0 p-0 col-2 text-center">
+                        @{
+                            string[] priorityValues = { "cust-text-sblue", "cust-text-pyellow", "cust-text-pred" };
+                            string priorityColorOnLoad = ((Model.FilterOptions != null) ? (ITicket.Helper.TicketPrioritySwitch((ITicket.TicketPriority)Model.FilterOptions.Priority, priorityValues)) : (string.Empty));
+                            <select onchange="matchClass(this, 'form-control cust-border-box', ['cust-text-sblue', 'cust-text-pyellow', 'cust-text-pred'])" name="@($"{Model.FilterPropertyName}.Priority")" class="form-control cust-border-box @priorityColorOnLoad">
+                                <option value="-1">Prioritet</option>
+                                @{
+                                    var priorityDisplayNames = ITicket.Helper.GetPriorityDisplayNames();
+                                    for (var i = 0; i < priorityDisplayNames.Length; i++)
+                                    {
+                                        //  Colors the option text in the dropdown
+                                        if (Model.FilterOptions != null && Model.FilterOptions.Priority == i)
+                                        {
+                                            <option selected class="@ITicket.Helper.TicketPrioritySwitch((ITicket.TicketPriority)i,priorityValues)" value="@i">@priorityDisplayNames[i]</option>
+                                        }
+                                        else
+                                        {
+                                            <option class="@ITicket.Helper.TicketPrioritySwitch((ITicket.TicketPriority)i,priorityValues)" value="@i">@priorityDisplayNames[i]</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        }
+                    </th>
+                    <th class="m-0 p-0 col-2 text-center">
+                        @{
+                            string[] statusValues = { "cust-text-pyellow", "cust-text-pgreen", "cust-text-sblue", "cust-text-tertiary", "cust-text-primary", "cust-text-pred" };
+                            string statusColorOnLoad = ((Model.FilterOptions != null) ? (ITicket.Helper.TicketStatusSwitch((ITicket.TicketStatus)Model.FilterOptions.Status, statusValues)) : (string.Empty));
+                            <select onchange="matchClass(this, 'form-control cust-border-box', ['cust-text-pyellow', 'cust-text-pgreen', 'cust-text-sblue', 'cust-text-tertiary', 'cust-text-primary', 'cust-text-pred'])" name="@($"{Model.FilterPropertyName}.Status")" class="form-control cust-border-box @statusColorOnLoad">
+                                <option value="-1">Status</option>
+                                @{
+                                    var statusDisplayNames = ITicket.Helper.GetStatusDisplayNames();
+                                    for (var i = 0; i < statusDisplayNames.Length; i++)
+                                    {
+                                        //  Colors the option text in the dropdown
+                                        @if (Model.FilterOptions != null && Model.FilterOptions.Status == i)
+                                        {
+                                            <option selected class="@ITicket.Helper.TicketStatusSwitch((ITicket.TicketStatus)i, statusValues)" value="@i">@statusDisplayNames[i]</option>
+                                        }
+                                        else
+                                        {
+                                            <option class="@ITicket.Helper.TicketStatusSwitch((ITicket.TicketStatus)i, statusValues)" value="@i">@statusDisplayNames[i]</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        }
+                    </th>
+                    <th class="m-0 p-0 col-1"><button asp-page-handler="@Model.FilterHandler" class="w-100 h-100 btn btn-success cust-border-box" type="submit">Filtrer</button></th>
+                </tr>
+            </thead>
+        </table>
+    }
+    <!--List View begins here-->
+    <table class="table table-light table-striped">
+        <thead class="thead-dark">
+            <tr>
+                @if (User.IsInRole(RoleHelper.DEVELOPER))
+                {
+                    <th class="col-1">ID</th>
+                }
+                <th class="col-2">Sagsnummer</th>
+                <th class="col-@((Model.HideSettings)?("8"):("7"))">Detaljer</th>
+                @if (!Model.HideSettings)
+                {
+                    <th class="col-2 text-center">Indstillinger</th>
+                }
+            </tr>
+        </thead>
+        @if (Model.Tickets != null)
+        {
+            var tickets = Model.Tickets;
+
+            if (tickets != null)
+            {
+                var pagedtickets = tickets
+                .Skip(((Model.UsePagination) ? ((Model.CurrentPage * Model.PageSize) - Model.PageSize) : (0)))
+                .Take(((Model.UsePagination) ? (Model.PageSize) : (tickets.Count)))
+                .ToList();
+
+                foreach (var ticket in pagedtickets)
+                {
+                    // Colorization
+                    string priorityColor = ITicket.Helper.TicketPrioritySwitch(ticket.Priority, new string[] { "cust-bg-sblue cust-border-sblue", "cust-bg-pyellow cust-border-pyellow", "cust-bg-pred cust-border-pred" });
+                    string statusColor = ITicket.Helper.TicketStatusSwitch(ticket.Status, new string[] { "cust-bg-pyellow cust-border-pyellow", "cust-bg-pgreen cust-border-pgreen", "cust-bg-sblue cust-border-sblue", "cust-tertiary cust-border-tertiary", "text-dark", "cust-bg-pred cust-border-pred" });
+
+                    <tr>
+                        @if (User.IsInRole(RoleHelper.DEVELOPER))
+                        {
+                            <td style="vertical-align:middle;"><a class="text-dark d-block" asp-page="/TicketPage" asp-route-id="@ticket.ID">@ticket.ID</a></td>
+                        }
+                        <td style="vertical-align:middle;">@ticket.GetTicketNumber()</td>
+                        <td>
+                            <div class="row border-bottom">
+                                <a class="text-dark d-block font-weight-bold" asp-page="/TicketPage" asp-route-id="@ticket.ID">@ticket.Title</a>
+                                <!--Status & Priority-->
+                                <span style="font-size:10px;" class="ml-2 align-self-center">
+                                    <span class="p-1 border cust-rounded font-weight-bold @priorityColor text-white">@(Html.DisplayTextFor(model => ticket.Priority))</span> <span class="p-1 border cust-rounded font-weight-bold @statusColor text-white">@(Html.DisplayTextFor(model => ticket.Status))</span>
+                                </span>
+                                <!--Conditionals-->
+                                @if (!Model.HideConditionals && ticket.Status == ITicket.TicketStatus.Pending && User.IsSuperUser())
+                                {
+                                    <span class="ml-auto mr-0">
+                                        <button class="mr-2 btn btn-success cust-btn-inline cust-border-box" asp-page-handler="Accept" asp-route-ticketID="@ticket.ID">Accepter</button><button class="btn btn-danger cust-btn-inline cust-border-box" asp-page-handler="Deny" asp-route-ticketID="@ticket.ID">Nægt</button>
+                                    </span>
+                                }
+                            </div>
+
+                            <div style="font-size:13px;" class="row cust-text-tertiary">
+                                <p>
+                                    @((await ticket.GetDepartmentAsync()).Name) <strong class="ml-2">Ansvarlige:</strong>
+                                    @{
+                                        var assignedEmployees = await ticket.GetAssignedEmployeesAsync();
+                                        if (assignedEmployees != null)
+                                        {
+                                            int index = 0;
+                                            foreach (var employee in assignedEmployees)
+                                            {
+                                                <a href="/Identity/Account/UserPage/@employee.ID">@employee.FirstName @employee.LastName@((index == assignedEmployees.Count-1)?(string.Empty):(","))</a>
+                                                index++;
+
+                                                if (index > 5)
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                </p>
+                            </div>
+                            @if (ticket.StartDate.HasValue || ticket.EndDate.HasValue)
+                            {
+                                <div style="font-size:13px;" class="row cust-text-tertiary">
+                                    <span class="pl-1 pr-1 border cust-rounded cust-tertiary cust-text-secondary">
+                                        @if (ticket.StartDate.HasValue)
+                                        {
+                                            <strong>Start Dato:</strong> <text>@ticket.StartDate?.ToShortDateString() @ticket.StartDate?.ToShortTimeString()</text>
+                                        }
+
+                                        @if (ticket.EndDate.HasValue)
+                                        {
+                                            <strong>Deadline:</strong> <text>@ticket.EndDate?.ToShortDateString() @ticket.EndDate?.ToShortTimeString()</text>
+                                        }
+                                    </span>
+                                </div>
+                            }
+                        </td>
+                        @if (!Model.HideSettings)
+                        {
+                            <!--Setting buttons-->
+                            <td style="vertical-align:middle;" class="text-center">
+                                @{
+                                    string[] statusDisplayNames = ITicket.Helper.GetStatusDisplayNames();
+                                    int sinkTo = (int)ticket.Status - 1;
+                                    int bubbleTo = (int)ticket.Status + 1;
+
+                                    //  Edit
+                                    if (User.IsAdmin() || User.IsSelf(ticket.AuthorID))
+                                    {
+                                        <button asp-page-handler="TicketEdit" asp-route-ticketID="@ticket.ID" asp-route-returnURL="@Model.ReturnURL" class="btn m-0 p-0"><span class="bi bi-pencil-fill cust-text-pblue" data-toggle="tooltip" data-placement="bottom" title="Ret"></span></button>
+                                    }
+                                    else
+                                    {
+                                        <p class="btn m-0 p-0"><span class="bi bi-pencil-fill cust-text-tertiary"></span></p>
+                                    }
+
+                                    //  Sink
+                                    if (sinkTo > 0 && sinkTo < (int)ITicket.TicketStatus.Pending)
+                                    {
+                                        <button asp-page-handler="SinkTicket" asp-route-ticketID="@ticket.ID" class="btn m-0 p-0"><span class="bi bi-arrow-bar-left cust-text-pred" data-toggle="tooltip" data-placement="bottom" title="@($"Sæt til: {statusDisplayNames[sinkTo]}")"></span></button>
+                                    }
+                                    else
+                                    {
+                                        <p class="btn m-0 p-0"><span class="bi bi-arrow-bar-left cust-text-tertiary"></span></p>
+                                    }
+
+                                    //  Pause
+                                    if (sinkTo >= 0 && sinkTo < (int)ITicket.TicketStatus.Paused && ticket.Status != ITicket.TicketStatus.Paused)
+                                    {
+                                        <button asp-page-handler="QuickPause" asp-route-ticketID="@ticket.ID" class="btn m-0 p-0"><span class="bi bi-pause cust-text-pyellow" data-toggle="tooltip" data-placement="bottom" title="Sæt på: Pause"></span></button>
+                                    }
+                                    else if (ticket.Status == ITicket.TicketStatus.Paused)
+                                    {
+                                        <button asp-page-handler="QuickPause" asp-route-ticketID="@ticket.ID" class="btn m-0 p-0"><span class="bi bi-play cust-text-sgreen" data-toggle="tooltip" data-placement="bottom" title="Sæt til: Igangværende"></span></button>
+                                    }
+                                    else
+                                    {
+                                        <p class="btn m-0 p-0"><span class="bi bi-pause cust-text-tertiary"></span></p>
+                                    }
+
+                                    //  Bubble
+                                    if (bubbleTo < (int)ITicket.TicketStatus.Paused)
+                                    {
+                                        <button asp-page-handler="BubbleTicket" asp-route-ticketID="@ticket.ID" class="btn m-0 p-0"><span class="bi bi-arrow-bar-right cust-text-sgreen" data-toggle="tooltip" data-placement="bottom" title="@($"Sæt til: {statusDisplayNames[bubbleTo]}")"></span></button>
+                                    }
+                                    else
+                                    {
+                                        <p class="btn m-0 p-0"><span class="bi bi-arrow-bar-right cust-text-tertiary"></span></p>
+                                    }
+
+                                    //  Delete
+                                    if ((User.IsSuperUser() || User.IsSelf(ticket.AuthorID)) && ticket.Status == ITicket.TicketStatus.Inbound)
+                                    {
+                                        <button onclick="triggerConfWindow(this,'popup','ticketID','ticketID')" class="btn m-0 p-0" type="button" data-ticketID="@ticket.ID"><span class="bi bi-trash-fill cust-text-pred" data-toggle="tooltip" data-placement="bottom" title="Fjern"></span></button>
+                                    }
+                                    else
+                                    {
+                                        <p class="btn m-0 p-0"><span class="bi bi-trash-fill cust-text-tertiary"></span></p>
+                                    }
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        }
+    </table>
+    @if (Model.UsePagination && Model.Tickets != null && Model.Tickets.Count > Model.PageSize)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        @{
+                            Model.PageCount = (int)MathF.Ceiling((float)(Model.Tickets.Count / (float)((Model.PageSize != 0) ? (Model.PageSize) : (1))));
+                            var pageList = new List<SelectListItem>();
+                        }
+                        <select onchange="this.form.submit()" id="@Model.CurrentPagePropertyName" name="@Model.CurrentPagePropertyName" data-val="true" class="form-control cust-border-box text-center">
+                            @for (var i = 0; i < Model.PageCount; i++)
+                            {
+                                if (i + 1 == Model.CurrentPage)
+                                {
+                                    <option value="@(i+1)" selected>@(i+1)</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@(i+1)">@(i+1)</option>
+                                }
+                            }
+                        </select>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    }
+</form>

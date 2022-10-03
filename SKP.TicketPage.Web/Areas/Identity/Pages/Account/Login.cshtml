@@ -1,0 +1,42 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log ind";
+}
+
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h4 class="text-center">Log ind med SSO</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                <div>
+                    <p>
+                        @foreach (var provider in Model.ExternalLogins)
+                        {
+                            <div class="3"></div>
+                            <button type="submit" class="btn cust-bg-sblue text-white col border cust-border-box" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">Log ind</button>
+                        }
+                    </p>
+                </div>
+            </form>
+            <h4 class="text-center">Udvikler Portal</h4>
+            <hr />
+            <form id="test-account" asp-page="./DeveloperLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                <div>
+                    <p>
+                        <div class="3"></div>
+                        <button type="submit" class="btn cust-bg-sblue text-white col border cust-border-box" name="developerLogin" value="developerLogin" title="Log in using a test account">Log ind</button>
+                    </p>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

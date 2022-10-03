@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Interface Name="SKP.TicketPage.Services.ICommentRepository">
+    <Position X="1" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAACAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Interfaces\ICommentRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SKP.TicketPage.Services.ICrudRepository&lt;T&gt;">
+    <Position X="5.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAEgAAAAAAAAAAAAAAgAAAEAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Interfaces\ICrudRepository{T}.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SKP.TicketPage.Services.IDepartmentRepository">
+    <Position X="3.75" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Interfaces\IDepartmentRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SKP.TicketPage.Services.IEmployeeManager">
+    <Position X="6.5" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAEQAAAAgAAAAACAAACAAAA=</HashCode>
+      <FileName>Repositories\Interfaces\IEmployeeManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SKP.TicketPage.Services.ITicketRepository">
+    <Position X="9.25" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Interfaces\ITicketRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

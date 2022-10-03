@@ -1,0 +1,10 @@
+﻿@page
+@using SKP.TicketPage.Services
+@model SKP.TicketPage.Web.Pages.DepartmentOverviewModel
+@{
+    ViewData["Title"] = "Department Oversigt";
+}
+<h1 class="text-center">Afdelingsoversigt</h1>
+<hr />
+
+<partial name="Departments/_DepartmentListPartial" model="@(new Shared.Departments.Models.DepartmentListModel {Departments = Model.Departments, FilterOptions = Model.FilterOptions, FilterPropertyName = nameof(Model.FilterOptions) })" , CurrentPage=Model.CurrentPage, PageSize=Model.PageSize, PageCount=Model.PageCount />

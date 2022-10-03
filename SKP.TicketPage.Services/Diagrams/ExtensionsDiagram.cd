@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SKP.TicketPage.Services.CommentExtensions" Collapsed="true">
+    <Position X="2.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAABAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\CommentExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Services.DepartmentExtensions" Collapsed="true">
+    <Position X="4.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAABAAAAAAAIAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\DepartmentExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Services.EmployeeExtensions" Collapsed="true">
+    <Position X="2.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAIAAIAAAQAAAAAAAAAAAAE=</HashCode>
+      <FileName>Extensions\EmployeeExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SKP.TicketPage.Services.TicketExtensions" Collapsed="true">
+    <Position X="4.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAABBAAAAEgAAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\TicketExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

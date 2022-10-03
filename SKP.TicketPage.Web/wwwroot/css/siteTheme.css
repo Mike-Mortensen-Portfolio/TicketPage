@@ -1,0 +1,218 @@
+﻿/* Custom Colors
+-------------------------------------------------- */
+.cust-primary {
+    background-color: #3e3e42;
+}
+
+.cust-secondary {
+    background-color: #edededd9;
+}
+
+.cust-tertiary {
+    background-color: #969698;
+}
+
+.cust-tertiary-50 {
+    background-color: rgba(150, 150, 152, .5);
+}
+
+.cust-bg-pblue {
+    background-color: #3020E3;
+}
+
+.cust-bg-sblue {
+    background-color: #0077D3;
+}
+
+.cust-bg-pgreen {
+    background-color: #127a57;
+}
+
+.cust-bg-sgreen {
+    background-color: #1bc98e;
+}
+
+.cust-bg-pred {
+    background-color: #e64759;
+}
+
+.cust-bg-pyellow {
+    background-color: #EBB217;
+}
+
+/* Text Colors
+-------------------------------------------------- */
+.cust-text-primary {
+    color: #3e3e42 !important;
+}
+
+.cust-text-secondary {
+    color: #edededd9 !important;
+}
+
+.cust-text-tertiary {
+    color: #969698 !important;
+}
+
+.cust-text-pblue {
+    color: #3020E3 !important;
+}
+
+.cust-text-sblue {
+    color: #0077D3 !important;
+}
+
+.cust-text-pgreen {
+    color: #127a57 !important;
+}
+
+.cust-text-sgreen {
+    color: #1bc98e !important;
+}
+
+.cust-text-pred {
+    color: #e64759 !important;
+}
+
+.cust-text-sred {
+    color: #e64759 !important;
+}
+
+.cust-text-pyellow {
+    color: #EBB217 !important;
+}
+
+/* Border Colors
+-------------------------------------------------- */
+.cust-border-primary {
+    border-color: #3e3e42 !important;
+}
+
+.cust-border-secondary {
+    border-color: #edededd9 !important;
+}
+
+.cust-border-tertiary {
+    border-color: #969698 !important;
+}
+
+.cust-border-pblue {
+    border-color: #3020E3 !important;
+}
+
+.cust-border-sblue {
+    border-color: #0077D3 !important;
+}
+
+.cust-border-pgreen {
+    border-color: #127a57 !important;
+}
+
+.cust-border-sgreen {
+    border-color: #1bc98e !important;
+}
+
+.cust-border-pred {
+    border-color: #e64759 !important;
+}
+
+.cust-border-pyellow {
+    border-color: #EBB217 !important;
+}
+
+/* Custom Fonts
+-------------------------------------------------- */
+.cust-font-roboto {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Custom Border
+-------------------------------------------------- */
+.cust-border-box {
+    border-radius: 0px !important;
+}
+
+.cust-rounded {
+    border-radius: 25px;
+}
+
+.cust-banner-left {
+    border-left: 10px solid black;
+}
+
+.cust-banner-right {
+    border-right: 10px solid black;
+}
+
+.cust-banner-top {
+    border-top: 10px solid black;
+}
+
+.cust-banner-bottom {
+    border-bottom: 10px solid black;
+}
+/* Custom Styles
+-------------------------------------------------- */
+.cust-valign-middle {
+    vertical-align: middle;
+}
+
+.cust-btn-inline {
+    height: 20px;
+    line-height: 50%;
+}
+
+.cust-box-shadow {
+    box-shadow: 3px 6px 15px -2px rgba(0,0,0,0.80);
+}
+
+.cust-monitor-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-right: -32px;
+    height: calc(95.8vh - 80px);
+}
+
+.cust-select-primary {
+    background-color: #3e3e42 !important;
+    color: #edededd9;
+}
+
+    .cust-select-primary:focus {
+        background-color: #3e3e42 !important;
+        color: #edededd9 !important;
+        box-shadow: none !important;
+    }
+
+.cust-button-outline-none {
+    color: #3e3e42;
+}
+
+    .cust-button-outline-none:focus {
+        outline: none !important;
+    }
+
+/* Custom Elements
+-------------------------------------------------- */
+a {
+    color: #0077D3 !important;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #edededd9;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #3e3e42;
+}
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #969698;
+    }

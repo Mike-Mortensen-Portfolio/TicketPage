@@ -1,0 +1,9 @@
+﻿@page "{id}/{returnURL=}"
+@using SKP.TicketPage.Services
+@using SKP.TicketPage.Web.Pages.Shared.Employees.Models
+@model SKP.TicketPage.Web.Areas.Identity.Pages.Account.EditUserModel
+@{
+    ViewData["Title"] = "Ret Bruger";
+}
+
+<partial name="Employees/_EmployeeFormPartial" model="@(new SKP.TicketPage.Web.Pages.Shared.Employees.Models.EmployeeFormModel { ReadOnly = false, Input = new SKP.TicketPage.Web.Pages.Shared.Employees.Models.EmployeeFormModel.EmployeeFormInputModel {Employee = Model.Input.Employee as EmployeeDTO, RoleName = await Model.Input.Employee.GetRoleNameAsync()}, ReturnURL = "EmployeeOverview", LockFlag = ((await Model.Input.Employee.GetRoleNameAsync() != RoleHelper.DEVELOPER && !User.IsSelf(Model.Input.Employee)) ? (EmployeeFormModel.Lock.NameAndEmail):(EmployeeFormModel.Lock.NameEmailAndRole)) })" />

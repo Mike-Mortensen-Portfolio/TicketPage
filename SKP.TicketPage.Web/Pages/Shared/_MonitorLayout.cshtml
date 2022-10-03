@@ -1,0 +1,63 @@
+﻿@using SKP.TicketPage.Services;
+@using System.Security.Claims;
+@inject ITicketPageService service
+<!DOCTYPE html>
+<html style="overflow:hidden;" class="m-0 h-100 w-100">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="900" /> <!-- Refreshes the page every 15 minutes -->
+    <title>SBO - @ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/siteTheme.css" />
+    <title>@ViewBag.Title</title>
+</head>
+<body class="m-0 p-0 h-100 w-100 container-fluid cust-secondary">
+    <header>
+        <nav class="navbar cust-primary box-shadow">
+            <div class="row w-100">
+                <a class="ml-5 navbar-brand cust-text-secondary" asp-area="" asp-page="/Index">SBO Ticket System</a>
+                @{
+                    IReadOnlyList<IDepartment> departments = await service.Department.GetAllAsync();
+
+                    <select onchange="redirectToMonitor(this)" style="max-height: 35px; max-width:150px;" class="p-0 m-0 mt-1 form-control cust-select-primary cust-border-primary">
+                        @{
+                            //  Gets the current index for indexed list view but resets the index if a department is specifically selected
+                            var pathValues = Context.Request.Path.Value.Split("/");
+                            if (!int.TryParse(pathValues[pathValues.Length - 1], out int result))
+                            {
+                                result = 0;
+                            }
+                        }
+                        <option class="cust-primary" value="@($"all/{result}")">@($"Alle[{result}]")</option>
+                        @if (departments != null && departments.Count > 0)
+                        {
+                            foreach (var department in departments)
+                            {
+                                if (Context.Request.RouteValues.FirstOrDefault(rv => rv.Value.ToString() == department.Prefix).Value != default)
+                                {
+                                    <option selected class="cust-primary" value="@($"prefix/{department.Prefix}")">@((User.IsInRole(RoleHelper.DEVELOPER))?($" ID: {department.ID} | "):(string.Empty))@department.Name</option>
+                                }
+                                else
+                                {
+                                    <option class="cust-primary" value="@($"prefix/{department.Prefix}")">@((User.IsInRole(RoleHelper.DEVELOPER))?($" ID: {department.ID} | "):(string.Empty))@department.Name</option>
+                                }
+                            }
+                        }
+                    </select>
+                }
+            </div>
+        </nav>
+    </header>
+    <div class="row pl-2 pr-3">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

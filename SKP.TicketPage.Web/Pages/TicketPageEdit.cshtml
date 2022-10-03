@@ -1,0 +1,14 @@
+﻿@page "{id:int}"
+@using SKP.TicketPage.Services
+@model SKP.TicketPage.Web.Pages.TicketPageEditModel
+@{
+    ViewData["Title"] = "Ret Opgave";
+
+    var lockFlag = ((Model.Input.Status == ITicket.TicketStatus.Pending && !User.IsAdmin()) ? (SKP.TicketPage.Web.Pages.Shared.Tickets.Models.TicketFormModel.Lock.DepartmentAndStatus) : (SKP.TicketPage.Web.Pages.Shared.Tickets.Models.TicketFormModel.Lock.Department));
+}
+<partial name="Tickets/_TicketFormPartial" model="@(new Shared.Tickets.Models.TicketFormModel { Header = "Ret Opgave", Input = Model.Input, LockFlag = lockFlag })" />
+
+@section Scripts{
+<script src="~/RichText/build/ckeditor.js"></script>
+<script src="~/RichText/editorEmbed.js"></script>
+}

@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+    <div class="centered">
+        <div class="row row-editor">
+            <div class="editor-container">
+                <div class="editor">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="../build/ckeditor.js"></script>
+    <script>
+        InlineEditor
+            .create(document.querySelector('.editor'), {
+
+                licenseKey: '',
+
+
+
+            })
+            .then(editor => {
+                window.editor = editor;
+
+
+
+
+            })
+            .catch(error => {
+                console.error('Oops, something went wrong!');
+                console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+                console.warn('Build id: g0odbkmz7czj-qv4rmsnwwei0');
+                console.error(error);
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+﻿@page "{id:int}"
+@model SKP.TicketPage.Web.Pages.TicketPageDeleteModel
+@{
+    ViewData["Title"] = "Slet Opgave";
+}
+
+<h4 class="text-center text-danger">⚠️ Vil du slette opgaven? ⚠️</h4>
+<hr />
+<form class="form-group" method="post" asp-page-handler="Delete" asp-route-id="@Model.Ticket.ID">
+    <p class="text-muted">Skriv <i>@Model.Ticket.Title</i> i boksen nedenfor for at bekræfte</p>
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th class="m-0 p-0 col-2">
+                    <span asp-validation-for="Input.Title"></span>
+                    <label class="pr-0 font-weight-bold">Titel:</label>
+                </th>
+                <th class="m-0 p-0 col-10">
+                    <input class="form-control cust-border-box" type="text" placeholder="@Model.Ticket.Title" maxlength="@Model.Ticket.Title.Length" asp-for="Input.Title" />
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <button class="form-control btn btn-danger cust-border-box">Bekræft</button>
+</form>

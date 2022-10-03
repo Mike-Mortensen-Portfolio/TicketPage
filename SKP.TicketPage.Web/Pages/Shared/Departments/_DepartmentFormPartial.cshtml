@@ -1,0 +1,97 @@
+﻿@model Departments.Models.DepartmentFormModel
+@{
+
+}
+
+<form method="post" asp-page-handler="ConfirmDepartmentForm">
+    <partial name="Misc/_ConfirmationWindowPartial" model="@(new Shared.Misc.Models.ConfirmationWindowModel {AcceptButtonText = "Yes", AcceptHandler = "SyncTickets", DeclineButtonText = "No", DeclineUsingForm = true, DeclineHandler = "ConfirmDepartmentForm", DataInputName = "DepartmentID", IsWarning = false, Header = "Synkroniser Opgaver?", SubHeader = "Det vil synkroniserer præfikset i all sagsnumrer til opgaverne der tilhøre denne afdeleing"})" />
+
+    <!--Header-->
+    <table class="m-0 mb-2 p-0 table table-borderless">
+        <thead>
+            <tr class="m-0 p-0">
+                <th class="m-0 p-0 col-11"><h1 class="font-weight-bold">@(Model.Header ?? "")</h1></th>
+            </tr>
+        </thead>
+    </table>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <!--Department Details-->
+    <table class="table table-borderless">
+        <tr>
+            <th class="m-0 p-0 col-1">
+                <label class="col-form-label">Navn:</label>
+            </th>
+            <th class="m-0 p-0 col-4">
+                @if (!Model.ReadOnly && Model.LockFlag != Models.Lock.Name)
+                {
+                    <input class="form-control cust-border-box" asp-for="@Model.Input.Name" />
+                }
+                else
+                {
+                    <p class="form-control cust-border-box">@Model.Input.Name</p>
+                }
+            </th>
+            <th class="m-0 p-0 col-1"></th>
+            <th class="m-0 p-0 col-1">
+                <label class="col-form-label">Præfiks:</label>
+            </th>
+            <th class="m-0 p-0 col-1">
+                @if (!Model.ReadOnly && Model.LockFlag != Models.Lock.Prefix)
+                {
+                    <input class="form-control cust-border-box" asp-for="@Model.Input.Prefix" />
+                }
+                else
+                {
+                    <p class="form-control cust-border-box">@Model.Input.Prefix</p>
+                }
+            </th>
+            <th class="m-0 p-0 col-1"></th>
+            <th class="m-0 p-0 col-2">
+                <label class="col-form-label">Inkludér i sagsnr.?</label>
+            </th>
+            <th class="m-0 p-0 col-1">
+                @if (!Model.ReadOnly)
+                {
+                    <select asp-for="@Model.Input.IncludePrefix" class="form-control cust-border-box">
+                        @if (Model.Input == null || Model.Input.IncludePrefix)
+                        {
+                            <option selected value="true">Ja</option>
+                            <option value="false">Nej</option>
+                        }
+                        else
+                        {
+                            <option value="true">Ja</option>
+                            <option selected value="false">Nej</option>
+                        }
+                    </select>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="@Model.Input.IncludePrefix" />
+                    <p class="form-control cust-border-box">@((Model.Input.IncludePrefix)?("Ja"):("Nej"))</p>
+                }
+            </th>
+        </tr>
+    </table>
+
+    @if (!Model.ReadOnly)
+    {
+        <!--Confirm Button-->
+        <table class="mt-2 table table-borderless">
+            <tr>
+                <th class="m-0 p-0">
+                    @if (!Model.HideSyncButton)
+                    {
+                        <button onclick="triggerConfWindow(this,'popup','departmentID','id')" data-id="@Model.Input.ID" type="button" class="form-control btn btn-success cust-border-box">Bekræft</button>
+                    }
+                    else
+                    {
+                        <button class="form-control btn btn-success cust-border-box">Bekræft</button>
+                    }
+                </th>
+            </tr>
+        </table>
+    }
+</form>

@@ -1,0 +1,136 @@
+﻿@using SKP.TicketPage.Services
+@inject ITicketPageService service
+@model SKP.TicketPage.Web.Pages.Shared.Employees.Models.EmployeeFormModel
+@{
+}
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form class="form-group" method="post" asp-page-handler="ConfirmEmployeeForm" asp-route-id="@Model.Input.Employee.ID" asp-route-returnURL="@Model.ReturnURL">
+    @if (User.IsInRole(RoleHelper.DEVELOPER))
+    {
+        <label class="control-label font-weight-bold">ID: </label>
+        <p class="form-control cust-border-box">@Model.Input.Employee.ID</p>
+    }
+
+    <table class="table table-borderless">
+        <tr>
+            <th class="m-0 p-0 pr-1 col-5">
+                <label class="control-label font-weight-bold">Fornavn:</label>
+                @if (!Model.ReadOnly && !(Model.LockHelper.NameLocked(Model.LockFlag)))
+                {
+                    <input class="form-control cust-border-box" asp-for="@Model.Input.Employee.FirstName" />
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Input.Employee.FirstName" />
+                    <p style="overflow:hidden;" class="form-control cust-border-box">@Model.Input.Employee.FirstName</p>
+                }
+            </th>
+            <th class="m-0 p-0 pr-1 pl-1 col-5">
+                <label class="control-label font-weight-bold">Efternavn:</label>
+                @if (!Model.ReadOnly && !(Model.LockHelper.NameLocked(Model.LockFlag)))
+                {
+
+                    <input class="form-control cust-border-box" asp-for="@Model.Input.Employee.LastName" />
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Input.Employee.LastName" />
+                    <p class="form-control cust-border-box">@Model.Input.Employee.LastName</p>
+                }
+            </th>
+            <th class="m-0 p-0 pl-1 col-2">
+                <label class="control-label font-weight-bold">Aktiv:</label>
+                @if (!Model.ReadOnly)
+                {
+                    <select asp-for="Input.Employee.Active" class="form-control cust-border-box">
+                        @if (Model.Input.Employee.Active)
+                        {
+                            <option selected value="true">Ja</option>
+                            <option value="false">Nej</option>
+                        }
+                        else
+                        {
+                            <option value="true">Ja</option>
+                            <option selected value="false">Nej</option>
+                        }
+
+                    </select>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Input.Employee.Active" />
+                    <p class="form-control cust-border-box">@((Model.Input.Employee.Active)?("Ja"):("Nej"))</p>
+                }
+            </th>
+        </tr>
+        <tr>
+            <th class="m-0 p-0 pr-1 col-5">
+                <label class="control-label font-weight-bold">Email: </label>
+                @if (!Model.ReadOnly && !(Model.LockHelper.EmailLocked(Model.LockFlag)))
+                {
+                    <input class="form-control cust-border-box" asp-for="@Model.Input.Employee.Email" />
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Input.Employee.Email" />
+                    <p class="form-control cust-border-box">@Model.Input.Employee.Email</p>
+                }
+            </th>
+            <th class="m-0 p-0 pl-1 col-5">
+                <label class="control-label font-weight-bold">Afdeling:</label>
+                @if (!Model.ReadOnly && !(Model.LockHelper.DepartmentLocked(Model.LockFlag)))
+                {
+                    IReadOnlyList<IDepartment> departments = await service.Department.GetAllAsync();
+                    <select asp-for="Input.Employee.DepartmentID" class="form-control cust-border-box">
+                        <option value="-1">Vælg afdeling</option>
+                        @if (departments != null && departments.Count > 0)
+                        {
+                            foreach (var department in departments)
+                            {
+                                <option value="@department.ID">@((User.IsInRole(RoleHelper.DEVELOPER))?($"ID: {department.ID} | "):(string.Empty))@department.Name</option>
+                            }
+                        }
+                    </select>
+                }
+                else
+                {
+                    IDepartment department = await Model.Input.Employee.GetDepartment();
+
+                    <p class="form-control cust-border-box">@((User.IsInRole(RoleHelper.DEVELOPER))?($"ID: {department?.ID} | "):(string.Empty))@department?.Name</p>
+                }
+            </th>
+            <th class="m-0 p-0 pl-1 col-5">
+                <label class="control-label font-weight-bold">Rolle:</label>
+                @if (!Model.ReadOnly && !(Model.LockHelper.RoleLocked(Model.LockFlag)))
+                {
+                    IReadOnlyList<IRole> roles = (await service.Employee.GetAllRolesAsync())
+                    .Where(r => r.Name != RoleHelper.DEVELOPER && r.Name != RoleHelper.SYSTEM)
+                    .ToList();
+                    <select asp-for="Input.RoleName" class="form-control cust-border-box">
+                        <option value="Invalid">Vælg Rolle</option>
+                        @if (roles != null && roles.Count > 0)
+                        {
+                            foreach (var role in roles)
+                            {
+                                <option value="@role.Name">@((User.IsInRole(RoleHelper.DEVELOPER))?($"ID: {role.ID} | "):(string.Empty))@role.DisplayName</option>
+                            }
+                        }
+                    </select>
+                }
+                else
+                {
+                    <p class="form-control cust-border-box">@((await service.Employee.GetRoleByNameAsync (Model.Input.RoleName))?.DisplayName)</p>
+                }
+            </th>
+        </tr>
+    </table>
+
+    @if (!Model.ReadOnly)
+    {
+        <div class="row">
+            <button class="mt-5 form-control btn btn-success cust-border-box">Bekræft</button>
+        </div>
+    }
+</form>

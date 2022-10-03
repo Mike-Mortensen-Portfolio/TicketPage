@@ -1,0 +1,120 @@
+﻿@using SKP.TicketPage.Services
+@inject ITicketPageService service;
+@model Shared.Departments.Models.DepartmentListModel
+@{
+}
+
+<form method="post">
+    <partial name="Misc/_ConfirmationWindowPartial" model="@(new Shared.Misc.Models.ConfirmationWindowModel {Hide = true, IsWarning = true, Header = "Fjern Afdeling?", SubHeader = "Brugere i denne afdeling vil stå uden afdeling, og alle opgaver tilhørende afdeling vil blive slettet! Overvej at skifte navn og/eller præfiks istedet."})" />
+</form>
+
+<form method="post" asp-page-handler="@Model.FilterHandler">
+    <!--Header-->
+    <table class="m-0 mb-1 p-0 table table-borderless">
+        <thead>
+            <tr class="m-0 p-0">
+                <th class="m-0 p-0 col-11"><h3 class="font-weight-bold">@(Model.Header ?? "")</h3></th>
+                <!--Create button-->
+                @if (!Model.HideCreateButton)
+                {
+                    <th class="m-0 p-0 col-1 text-center"><a class="w-100 h-100 btn btn-success text-white cust-border-box" asp-page="/DepartmentPageCreate">Opret</a></th>
+                }
+            </tr>
+        </thead>
+    </table>
+    @if (!Model.HideFilter)
+    {
+        <!--Filter-->
+        <table class="m-0 p-0 table table-borderless">
+            <thead>
+                <tr>
+                    <th style="vertical-align:middle;" class="m-0 p-0 col-1 text-center">Filter:</th>
+                    <th class="m-0 p-0 col-10 text-center">
+                        @{
+                            <input id="@($"{Model.FilterPropertyName}_SearchKey")" name="@($"{Model.FilterPropertyName}.SearchKey")" class="form-control cust-border-box" type="text" placeholder="Søg..." value="@(Model.FilterOptions?.SearchKey)" />
+                        }
+                    </th>
+                    <th class="m-0 p-0 col-1 text-center"><button asp-page-handler="@Model.FilterHandler" class="w-100 h-100 btn btn-success cust-border-box" type="submit">Filtrer</button></th>
+                </tr>
+            </thead>
+        </table>
+    }
+    <!--List View Begins here-->
+    <table id="@Model.TableID" class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                @if (User.IsInRole(RoleHelper.DEVELOPER))
+                {
+                    <th class="text-center col-1">ID</th>
+                }
+                <th class="col-5 text-center">Navn</th>
+                <th class="col-4 text-center">Præfiks</th>
+                <th class="col-4 text-center">Inkludér Præfiks</th>
+                @if (!Model.HideSettings)
+                {
+                    <th class="text-center col-2">Indstillinger</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Departments != null)
+            {
+                var pagedDepartments = Model.Departments
+                .Skip(((Model.UsePagination) ? ((Model.CurrentPage * Model.PageSize) - Model.PageSize) : (0)))
+                .Take(((Model.UsePagination) ? (Model.PageSize) : (Model.Departments.Count)))
+                .ToList();
+
+                @foreach (var department in pagedDepartments)
+                {
+                    <tr>
+                        @if (User.IsInRole(RoleHelper.DEVELOPER))
+                        {
+                            <td class="text-center">@department.ID</td>
+                        }
+
+                        <td class="text-center">@department.Name</td>
+                        <td class="text-center">@department.Prefix</td>
+                        <td class="text-center">@((department.IncludePrefix)?("Ja"):("Nej"))</td>
+                        <!--Setting buttons-->
+                        @if (!Model.HideSettings)
+                        {
+                            <td class="text-center">
+                                @if (User.IsSuperUser())
+                                {
+                                    <button asp-page-handler="DepartmentEdit" asp-route-departmentID="@department.ID" class="btn m-0 p-0"><span class="bi bi-pencil-fill cust-text-pblue" data-toggle="tooltip" data-placement="bottom" title="Ret"></span></button>
+                                    <button onclick="triggerConfWindow(this,'popup','confirmPackage','departmentID')" class="btn m-0 p-0" type="button" data-departmentID="@department.ID"><span class="bi bi-trash-fill cust-text-pred" data-toggle="tooltip" data-placement="bottom" title="Slet"></span></button>
+                                }
+                                else
+                                {
+                                    <p class="btn m-0 p-0"><span class="bi bi-pencil-fill cust-text-tertiary"></span></p>
+                                    <p class="btn m-0 p-0"><span class="bi bi-trash-fill cust-text-tertiary"></span></p>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    @if (Model.UsePagination && Model.Departments != null && Model.Departments.Count > Model.PageSize)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        @{
+                            Model.PageCount = (int)MathF.Ceiling((float)(Model.Departments.Count / (float)((Model.PageSize != 0) ? (Model.PageSize) : (1))));
+                            var pageList = new List<SelectListItem>();
+                            @for (var i = 0; i < Model.PageCount; i++)
+                            {
+                                pageList.Add(new SelectListItem { Text = (i + 1).ToString(), Value = (i + 1).ToString(), Selected = (i == Model.CurrentPage) });
+                            }
+                        }
+                        @Html.DropDownListFor((m=> m.CurrentPage), pageList,  new { @class = "form-control cust-border-box text-center", @onchange="this.form.submit()" })
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    }
+</form>

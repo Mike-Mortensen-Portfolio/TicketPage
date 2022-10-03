@@ -1,0 +1,45 @@
+﻿@using SKP.TicketPage.Services
+@inject ITicketPageService service
+@model ITicket
+@{
+    string bannerColor = ITicket.Helper.TicketPrioritySwitch(Model.Priority, new string[] { "cust-border-sblue", "cust-border-pgreen", "cust-border-pred" });
+}
+
+<a style="text-decoration:none;" href="/TicketPage/@Model.ID" class="m-0 p-0 cust-text-secondary">
+    <div class="mb-2 p-2 cust-primary cust-banner-left  @bannerColor">
+        @{
+            var author = await service.Employee.GetByIDAsync(Model.AuthorID);
+
+            string priorityColor = ITicket.Helper.TicketPrioritySwitch(Model.Priority, new string[] { "cust-bg-sblue cust-border-sblue", "cust-bg-pyellow cust-border-pyellow", "cust-bg-pred cust-border-pred" });
+            string statusColor = ITicket.Helper.TicketStatusSwitch(Model.Status, new string[] { "cust-bg-pyellow cust-border-pyellow", "cust-bg-pgreen cust-border-pgreen", "cust-bg-sblue cust-border-sblue", "cust-tertiary cust-border-tertiary", "text-dark", "cust-bg-pred cust-border-pred" });
+        }
+
+        <!--Header-->
+        <p class="p-0 pt-1 pb-1 text-center border-bottom cust-border-secondary font-weight-bold">
+            @Model.GetTicketNumber()
+            <!--Status & Priority-->
+            <span style="font-size:10px; vertical-align:middle;" class="ml-2">
+                <span class="p-1 border cust-rounded font-weight-bold @priorityColor">@Model.Priority.GetDisplayName()</span> <span class="p-1 border cust-rounded font-weight-bold @statusColor">@Model.Status.GetDisplayName()</span>
+            </span>
+        </p>
+        <!--Title-->
+        <p class="m-0 p-0"><b>Titel:</b> @Model.Title</p>
+
+        <!--Author-->
+        <p><b>Forfatter:</b> <span class="cust-text-pyellow">@author.FirstName @author.LastName</span></p>
+
+        <!--Assigned Employees-->
+        <p class="font-weight-bold mb-0">Ansvarlige:</p>
+        @{
+            var assignedEmployees = await Model.GetAssignedEmployeesAsync();
+            if (assignedEmployees != null)
+            {
+                for (var i = 0; (i < assignedEmployees.Count && i < 5); i++)
+                {
+                    <span><span class="m-0 mb-5 p-0 cust-text-pyellow">@assignedEmployees[i].FirstName @assignedEmployees[i].LastName</span>@((i < assignedEmployees.Count - 1 && i < 4)?(", "):(string.Empty))</span>
+                }
+            }
+        }
+        <p class="mt-2 mb-1"><b>Deadline:</b> <i>@Model.EndDate?.ToShortDateString() @Model.EndDate?.ToShortTimeString()</i> </p>
+    </div>
+</a>

@@ -1,0 +1,40 @@
+﻿@model Models.ConfirmationWindowModel
+@{
+}
+<div id="@Model.WindowID" style="top:25%; left:25%; right:auto; margin-left:0; margin-right:0; min-width:50%; width:50%; z-index:1;" class="position-absolute cust-box-shadow border cust-border-primary @((Model.Hide)? ("d-none"):(string.Empty))">
+
+    <input id="@Model.DataInputID" type="text" readonly hidden name="@Model.DataInputName" value="" />
+
+    <div style="top:0; bottom:0; margin-top:0; margin-top:0; min-width:100%; min-height:100%; z-index:-1;" class="position-absolute cust-secondary"></div>
+    <div class="m-2 p-5">
+        <h3 class="text-center @((Model.IsWarning) ? ("text-danger"): (string.Empty))">@(Model.Header ?? string.Empty)</h3>
+        <p class="text-center">@(Model.SubHeader ?? string.Empty)</p>
+
+        <table class="mt-5 table table-borderless">
+            <tr>
+                <th class="m-0 p-0 col-3"></th>
+                <th class="m-0 p-0 pr-1 col-3">
+                    @if (Model.AcceptUsingForm)
+                    {
+                        <button asp-page-handler="@Model.AcceptHandler" class="m-0 p-0 w-100 h-100 btn btn-success">@Model.AcceptButtonText</button>
+                    }
+                    else
+                    {
+                        <button onclick="@Model.AcceptClientHandler" class="m-0 p-0 w-100 h-100 btn btn-success">@Model.AcceptButtonText</button>
+                    }
+                </th>
+                <th class="m-0 p-0 pl-1 col-3">
+                    @if (Model.DeclineUsingForm)
+                    {
+                        <button asp-page-handler="@Model.DeclineHandler" class="m-0 p-0 w-100 h-100 btn btn-danger">@Model.DeclineButtonText</button>
+                    }
+                    else
+                    {
+                        <button onclick="@((Model.DeclineClientHandler == null)?($"toggleElement('{Model.WindowID}')"):(Model.DeclineClientHandler))" type="button" class="m-0 p-0 w-100 h-100 btn btn-danger">@Model.DeclineButtonText</button>
+                    }
+                </th>
+                <th class="m-0 p-0 col-3"></th>
+            </tr>
+        </table>
+    </div>
+</div>

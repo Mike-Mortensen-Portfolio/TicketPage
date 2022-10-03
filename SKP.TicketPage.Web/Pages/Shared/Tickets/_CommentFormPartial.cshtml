@@ -1,0 +1,32 @@
+﻿@using SKP.TicketPage.Services
+@model Shared.Tickets.Models.CommentFormModel
+@{
+}
+
+<form class="form-group" asp-route-id="@Model.TicketID">
+    @*<textarea id="commentBuilder" class="form-control border border-bottom-0 cust-border-tertiary cust-border-box" required placeholder="Write comment..." rows="3" maxlength="1225" asp-for="Input.Content"></textarea>*@
+
+    <input asp-for="Input.Content" type="hidden" id="editorData" />
+
+    <div style="height:120px; max-height:120px; padding: 0px 12px" id="commentBuilder" class="form-control border border-bottom-0 cust-border-tertiary cust-border-box editor" tabindex="0">
+        @Html.Raw(Model.Input?.Content)
+    </div>
+
+    @if (Model.EditComment)
+    {
+        <table class="p-0 table table-borderless">
+            <tr>
+                <th class="m-0 p-0 col-6">
+                    <button class="form-control btn btn-info border-info cust-border-box" id="submit" formmethod="post" asp-page-handler="EditComment" asp-route-commentID="@Model.Input.ID" asp-route-editComment="@Model.EditComment" asp-route-focusID="@Model.Input.ID">Ret</button>
+                </th>
+                <th class="m-0 p-0 col-6">
+                    <button class="form-control btn btn-danger border-danger cust-border-box" formmethod="get" asp-page="/TicketPage" asp-route-focusID="@Model.Input.ID">Fortryd</button>
+                </th>
+            </tr>
+        </table>
+    }
+    else
+    {
+        <button class="form-control btn btn-success border border-success cust-border-box" id="submit" asp-page-handler="CommentFormConfirm">Kommenter</button>
+    }
+</form>

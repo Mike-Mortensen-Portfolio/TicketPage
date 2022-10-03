@@ -1,0 +1,7 @@
+﻿@page
+@model SKP.TicketPage.Web.Pages.DepartmentPageCreateModel
+@{
+    ViewData["Title"] = "Ny Afdeling";
+}
+
+<partial name="Departments/_DepartmentFormPartial" model="@(new Shared.Departments.Models.DepartmentFormModel {Header = "Ny Afdeling",  Input = Model.Input, HideSyncButton = true})" />

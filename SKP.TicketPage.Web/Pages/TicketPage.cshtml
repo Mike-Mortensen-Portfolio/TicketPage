@@ -1,0 +1,123 @@
+﻿@page "{id:int}/{focusID=\"\"}"
+@using SKP.TicketPage.Services
+@using System.ComponentModel.DataAnnotations;
+@model SKP.TicketPage.Web.Pages.TicketPageModel
+@{
+    ViewData["Title"] = "Opgave";
+}
+
+<partial name="Tickets/_TicketFormPartial" model="@(new Shared.Tickets.Models.TicketFormModel {Header = Model.Ticket.Title, HideControls = !(User.IsSuperUser() || User.IsSelf( Model.Ticket.AuthorID)), Readonly = true, Input = Model.Ticket as TicketDTO})" />
+
+<div class=" form-group">
+
+    <h4 class="control-label font-weight-bold mt-3">Ansvarlige:</h4>
+
+    <!--Employee List-->
+    @{
+        string returnURL = $"/TicketPage/{Model.Ticket.ID}?focusID=employeeList";
+        <partial name="Employees/_EmployeeListPartial" model="@(new Shared.Employees.Models.EmployeeListModel{ TableID = "employeeList", HideSettings = !User.IsSuperUser(), Employees = Model.AssignedEmployees, FilterOptions = Model.FilterOptions, FilterLock = Shared.Employees.Models.EmployeeListModel.Lock.Status, ReturnURL = returnURL})" />
+    }
+
+    <!--Assign Employees-->
+    @if (User.IsSelf(Model.Ticket.AuthorID) || User.IsAdmin())
+    {
+        //  Only show employees from the department of the ticket, unless a filter is applied
+        string searchKey = string.Empty;
+        int departmentID = Model.Ticket.DepartmentID;
+        bool status = true;
+        if (Model.FilterOptions != null)
+        {
+            searchKey = (!(string.IsNullOrWhiteSpace(Model.FilterOptions.SearchKey)) ? (Model.FilterOptions.SearchKey) : (string.Empty));
+            departmentID = ((Model.FilterOptions.DepartmentID != -1) ? (Model.FilterOptions.DepartmentID) : (Model.Ticket.DepartmentID));
+            status = ((Model.FilterOptions.Active != "Invalid") ? (bool.Parse(Model.FilterOptions.Active)) : (true));
+        }
+
+        IReadOnlyList<IEmployee> employees = (await Model.Service.Employee.GetAllAsync())
+        .Where(e => e.DepartmentID == departmentID && e.Active == status && (($"{e.FirstName} {e.LastName}").Contains(searchKey) || searchKey == string.Empty))
+        .ToList();
+
+        int employeeID = -1;
+        <form class="form-group col" asp-route-id="@Model.Ticket.ID" asp-route-employeeID="@employeeID" method="post">
+            <span asp-validation-for="@employeeID" class="text-danger"></span>
+            <div class="row">
+                <select asp-for="@employeeID" class="form-control border cust-border-box col-8">
+                    <option value="-1">Tildel bruger</option>
+                    @if (employees != null && employees.Count > 0)
+                    {
+                        foreach (var employee in employees)
+                        {
+                            <option value="@employee.ID">@((User.IsInRole(RoleHelper.DEVELOPER))?($"ID: {employee.ID} |"):(string.Empty)) @employee.FirstName @employee.LastName</option>
+                        }
+                    }
+                </select>
+
+                <button asp-page-handler="AssignEmployee" class="ml-1 mr-1 form-control col btn btn-success border cust-border-box">Tildel</button>
+                <button asp-page-handler="RemoveEmployee" class="ml-1 mr-1 form-control col btn btn-danger border cust-border-box">Fjern</button>
+            </div>
+        </form>
+    }
+
+    <!--Comment Section begins here-->
+    <div class="row col">
+        <h4 class="control-label font-weight-bold">Kommentarer:</h4>
+    </div>
+    @{
+        var comments = await Model.Ticket.GetComentsAsync();
+
+        if (comments != null)
+        {
+            comments = comments.OrderByDescending(c => c.DateOfCreation).ToList();
+
+            for (int i = 0; i < ((comments.Count > 5) ? (5) : (comments.Count)); i++)
+            {
+                <div class="ml-5 mr-5">
+                    <partial name="Tickets/_CommentCardpartial" model="comments[i]" />
+                </div>
+            }
+
+            if (comments.Count > 5)
+            {
+                <div id="hiddenComments" class="p-0 m-0 d-none">
+                    @for (int i = 5; i < comments.Count; i++)
+                    {
+                        <div class="ml-5 mr-5">
+                            <partial name="Tickets/_CommentCardpartial" model="comments[i]" />
+                        </div>
+                    }
+                </div>
+
+                <table class="table table-borderless text-center">
+                    <thead>
+                        <tr>
+                            <th class="p-0 m-0 col-4"></th>
+                            <th id="buttonContainer" class="p-0 m-0 col-4"><button onclick="showComments('hiddenComments', 'buttonContainer')" class="text-center border-0 cust-button-outline-none" type="button">Se alle kommentarer</button></th>
+                            <th class="p-0 m-0 col-4"></th>
+                        </tr>
+                    </thead>
+                </table>
+            }
+        }
+        else
+        {
+            <p>Ingen kommentarer...</p>
+        }
+
+        if (Model.Service.Employee.IsSignedIn(User))
+        {
+            <partial name="Tickets/_CommentFormPartial" model="new Shared.Tickets.Models.CommentFormModel{TicketID=Model.Ticket.ID, EditComment=Model.EditComment, Input = Model.Input}" />
+        }
+    }
+
+    @{
+        <script type="text/javascript">
+            var el;
+            el = document.getElementById("@Model.FocusID");
+            el.focus()
+        </script>
+    }
+</div>
+
+@section Scripts{
+    <script src="~/RichText/build/ckeditor.js"></script>
+    <script src="~/RichText/editorEmbed.js"></script>
+}

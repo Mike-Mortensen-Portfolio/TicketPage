@@ -1,0 +1,41 @@
+﻿@using SKP.TicketPage.Services
+@using System.Web
+@inject ITicketPageService service
+@model IComment
+@{
+    IEmployee commentAuthor = await service.Employee.GetByIDAsync(Model.AuthorID);
+}
+
+<div class="mb-5 border cust-border-tertiary">
+    <form method="post">
+        @if (User.IsInRole(RoleHelper.DEVELOPER))
+        {
+            <p class="ml-2 font-weight-bold">ID: <span class="">@Model.ID</span></p>
+        }
+
+        @*<textarea id="@Model.ID" class="form-control border-0 cust-border-box" asp-for="@Model.Content" readonly rows="3"></textarea>*@
+        <div style="word-break:break-all; height:auto; padding: 6px 12px;" id="@Model.ID" tabindex="0" class="form-control border-0 cust-border-box cust-highlight">@Html.Raw(Model.Content)</div>
+
+        <table class="m-0 mt-1 p-0 table table-borderless">
+            <thead>
+                <tr>
+                    <th class="m-0 p-0">
+                        @{
+                            bool useUserlink = (User.IsSuperUser() || User.IsSelf(commentAuthor));
+                        }
+                        <p style="font-size:12px;" class="m-0 form-control border-0 font-italic cust-secondary">Skrevet af <a href="@((useUserlink)?($"/Identity/Account/UserPage/{commentAuthor.ID}"):("#"))"> @((User.IsInRole(RoleHelper.DEVELOPER))?($"ID: {commentAuthor.ID} |"):(string.Empty)) @commentAuthor.FirstName @commentAuthor.LastName</a> d. @Model.DateOfCreation.ToShortDateString(), @Model.DateOfCreation.ToShortTimeString()</p>
+                    </th>
+                    @if (useUserlink)
+                    {
+                        <th class="m-0 p-0 text-center">
+                            <button class="m-0 p-0 bi bi-pencil-fill border-0 cust-text-pblue" asp-page-handler="EditComment" asp-route-id="@Model.TicketID" asp-route-commentID="@Model.ID" asp-route-focusID="commentBuilder"></button>
+                        </th>
+                        <th class="m-0 p-0 text-center">
+                            <button class="m-0 p-0 bi bi-trash-fill border-0 cust-text-pred" asp-page-handler="RemoveComment" asp-route-id="@Model.TicketID" asp-route-commentID="@Model.ID"></button>
+                        </th>
+                    }
+                </tr>
+            </thead>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,11 @@
+﻿@page
+@using SKP.TicketPage.Services
+@inject ITicketPageService service
+@model SKP.TicketPage.Web.Pages.UserOverviewModel
+@{
+    ViewData["Title"] = "Employee Oversigt";
+}
+
+<h1 class="text-center">Brugeroversigt</h1>
+<hr />
+<partial name="Employees/_EmployeeListPartial" model="@(new Shared.Employees.Models.EmployeeListModel { Employees = Model.Employees, FilterOptions = Model.FilterOptions, CurrentPage = Model.CurrentPage, PageSize = Model.PageSize})" />

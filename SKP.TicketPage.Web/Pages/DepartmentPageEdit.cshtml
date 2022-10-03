@@ -1,0 +1,8 @@
+﻿@page "{id:int}"
+@using SKP.TicketPage.Services
+@model SKP.TicketPage.Web.Pages.DepartmentPageEditModel
+@{
+    ViewData["Title"] = "Ret Afdeling";
+}
+
+<partial name="Departments/_DepartmentFormPartial" model="@(new Shared.Departments.Models.DepartmentFormModel {Header = Model.Department.Name,  Input = Model.Input})" />

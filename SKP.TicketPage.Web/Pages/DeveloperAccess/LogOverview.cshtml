@@ -1,0 +1,136 @@
+﻿@page
+@using SKP.TicketPage.Services
+@model SKP.TicketPage.Web.Pages.DeveloperAccess.LogOverviewModel
+@{
+    ViewData["Title"] = "Log Overview";
+}
+<h1 class="text-center">Logoversigt</h1>
+<hr />
+
+
+<!--Filter-->
+<form method="post" asp-page-handler="Filter">
+    <table class="m-0 p-0 table table-borderless">
+        <thead>
+            <tr>
+                <th style="vertical-align:middle;" class="m-0 p-0 col-1 text-center">Filter:</th>
+                <th class="m-0 p-0 col-5 text-center">
+                    @{
+                        <input class="form-control cust-border-box" asp-for="FilterOptions.SearchKey" type="text" placeholder="Søg..." />
+                    }
+                </th>
+                <th class="m-0 p-0 col-3 text-center">
+                    @{
+                        string[] severityValues = { "cust-text-pred", "cust-text-pyellow", "cust-text-sblue" };
+                        string severityColorOnLoad = ((Model.FilterOptions != null) ? (ITicket.Helper.TicketPrioritySwitch((ITicket.TicketPriority)Model.FilterOptions.Severity, severityValues)) : (string.Empty));
+                        <select onchange="matchClass(this, 'form-control cust-border-box', ['cust-text-pred', 'cust-text-pyellow', 'cust-text-sblue'])" class="form-control cust-border-box @severityColorOnLoad" asp-for="FilterOptions.Severity">
+                            <option value="-1">Alvorlighed</option>
+                            @{
+                                var severityDisplayNames = ILogEntry.Helper.GetSeverityDisplayNames();
+                                for (var i = 0; i < severityDisplayNames.Length; i++)
+                                {
+                                    //  Colors the option text in the dropdown and marks the selected item
+                                    if (Model.FilterOptions != null && Model.FilterOptions.Severity == i)
+                                    {
+                                        <option selected class="@ILogEntry.Helper.LogEntrySeveritySwitch((ILogEntry.Severity)i,severityValues)" value="@i">@severityDisplayNames[i]</option>
+                                    }
+                                    else
+                                    {
+                                        <option class="@ILogEntry.Helper.LogEntrySeveritySwitch((ILogEntry.Severity)i,severityValues)" value="@i">@severityDisplayNames[i]</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    }
+                </th>
+                <th class="m-0 p-0 col-3 text-center">
+                    <input class="form-control cust-border-box" type="date" asp-for="FilterOptions.LogDate" />
+                </th>
+                <th class="m-0 p-0 col-1 text-center"><button class="w-100 h-100 btn btn-success cust-border-box" type="submit">Filtrer</button></th>
+            </tr>
+        </thead>
+    </table>
+</form>
+
+<!--List View-->
+<table class="table table-bordered table-dark table-striped">
+    <thead class="thead-dark text-center">
+        <tr>
+            <th class="col-2">Dato</th>
+            <th>Error</th>
+            <th class="col-1">Alvorlighed</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.LogEntries != null)
+        {
+            var pagedEntries = Model.LogEntries
+            .Skip((Model.CurrentPage * Model.PageSize) - Model.PageSize)
+            .Take(Model.PageSize)
+            .ToList();
+
+            foreach (var entry in pagedEntries)
+            {
+                <tr>
+                    <td style="text-align:center; vertical-align:middle;">@entry.LogDate</td>
+                    <td>
+                        <span class="font-weight-bold">@entry.Message</span>
+                        @if (entry.RequestID.Length != 9)   //  9 because the generated public identifier is 9 in length
+                        {
+                            <p class="font-weight-bold">ID: <code>@entry.RequestID</code></p>
+                        }
+                        else
+                        {
+                            <p class="font-weight-bold">ID: <code>@entry.GetPublicIdentifier()</code></p>
+                        }
+                        <hr />
+                        <button onclick="@($"toggleElement('st_{entry.RequestID}')")" class="btn btn-info w-100 cust-button-outline-none cust-text-secondary cust-border-box">Stack Trace</button>
+
+                        <span id="@($"st_{entry.RequestID}")" class="d-none">@entry.StackTrace</span>
+                    </td>
+                    @{
+                        string severityTDClass;
+
+                        switch (entry.SeverityFlag)
+                        {
+                            case ILogEntry.Severity.Critical:
+                                severityTDClass = "cust-text-pred";
+                                break;
+                            case ILogEntry.Severity.Warning:
+                                severityTDClass = "cust-text-pyellow";
+                                break;
+                            default:
+                                severityTDClass = "cust-text-sblue";
+                                break;
+                        }
+                    }
+                    <td style="text-align:center; vertical-align:middle;" class="@severityTDClass">@entry.SeverityFlag.GetDisplayName()</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<!--Pagination-->
+@if (Model.LogEntries != null && Model.LogEntries.Count > Model.PageSize)
+{
+    <form method="post" asp-page-handler="Filter">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        @{
+                            Model.PageCount = (int)MathF.Ceiling((float)(Model.LogEntries.Count / (float)((Model.PageSize != 0) ? (Model.PageSize) : (1))));
+                            var pageList = new List<SelectListItem>();
+                            @for (var i = 0; i < Model.PageCount; i++)
+                            {
+                                pageList.Add(new SelectListItem { Text = (i + 1).ToString(), Value = (i + 1).ToString(), Selected = (i == Model.CurrentPage) });
+                            }
+                        }
+                        @Html.DropDownListFor((m => m.CurrentPage), pageList, new { @class = "form-control cust-border-box text-center", @onchange = "this.form.submit()" })
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </form>
+}

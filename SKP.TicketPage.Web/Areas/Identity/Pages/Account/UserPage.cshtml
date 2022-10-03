@@ -1,0 +1,21 @@
+﻿@page "{id:int}"
+@using SKP.TicketPage.Services;
+@inject ITicketPageService service
+@model SKP.TicketPage.Web.Areas.Identity.Pages.Account.UserPageModel
+@{
+    ViewData["Title"] = $"{Model.Employee.FirstName} {Model.Employee.LastName}";
+}
+@if (User.IsSuperUser())
+{
+    <!--Employee Details-->
+    <partial name="Employees/_EmployeeFormPartial" model="@(new SKP.TicketPage.Web.Pages.Shared.Employees.Models.EmployeeFormModel { ReadOnly = true, Input = new SKP.TicketPage.Web.Pages.Shared.Employees.Models.EmployeeFormModel.EmployeeFormInputModel {Employee = Model.Employee as EmployeeDTO, RoleName = await Model.Employee.GetRoleNameAsync()} })" />
+}
+<!--Assigned Tickets list-->
+<partial name="Tickets/_TicketListPartial" model="@(new SKP.TicketPage.Web.Pages.Shared.Tickets.Models.TicketListModel {Header = "Tildelte Opgaver", Tickets = Model.AssignedTickets, FilterOptions = Model.AssignedFilterOptions, FilterHandler = "AssignedTicketFilter", FilterPropertyName = nameof(Model.AssignedFilterOptions), CurrentPagePropertyName=nameof(Model.AssignedTicketsCurrentPage), CurrentPage = Model.AssignedTicketsCurrentPage, PageSize = Model.PageSize, HideCreateButton = true, HideConditionals = true})" />
+
+@if (User.IsAdmin())
+{
+    <div class="mt-5"></div>
+    <!--Owned Tickets list-->
+    <partial name="Tickets/_TicketListPartial" model="@(new SKP.TicketPage.Web.Pages.Shared.Tickets.Models.TicketListModel {Header = "Dine Opgaver", Tickets = Model.OwnedTickets, FilterOptions = Model.OwnedFilterOptions, FilterHandler = "OwnedTicketFilter", FilterPropertyName = nameof(Model.OwnedFilterOptions), CurrentPagePropertyName=nameof(Model.OwnedTicketsCurrentPage), CurrentPage = Model.OwnedTicketsCurrentPage, PageSize = Model.PageSize })" />
+}

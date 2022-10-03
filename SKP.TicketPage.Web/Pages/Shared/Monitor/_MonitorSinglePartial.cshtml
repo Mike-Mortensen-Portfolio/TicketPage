@@ -1,0 +1,88 @@
+﻿@using SKP.TicketPage.Services
+@inject ITicketPageService service
+@model int
+@{
+    var department = await service.Department.GetByIDAsync(Model);
+
+    IReadOnlyList<ITicket> inboundTickets = null;
+    IReadOnlyList<ITicket> ongoingTickets = null;
+    IReadOnlyList<ITicket> pendingTickets = null;
+    IReadOnlyList<ITicket> pausedTickets = null;
+
+    if (department != null)
+    {
+        inboundTickets = (await service.Ticket.GetByDepartmentAsync(department.ID)).Where(t => t.Status == ITicket.TicketStatus.Inbound).ToList();
+        ongoingTickets = (await service.Ticket.GetByDepartmentAsync(department.ID)).Where(t => t.Status == ITicket.TicketStatus.Ongoing).ToList();
+        pendingTickets = (await service.Ticket.GetByDepartmentAsync(department.ID)).Where(t => t.Status == ITicket.TicketStatus.Pending).ToList();
+        pausedTickets = (await service.Ticket.GetByDepartmentAsync(department.ID)).Where(t => t.Status == ITicket.TicketStatus.Paused).ToList();
+    }
+    var statusDisplayNames = ITicket.Helper.GetStatusDisplayNames();
+}
+<div style="overflow:hidden" class="d-sm-block d-md-block d-lg-block col-sm-12 col-md-6 col-lg-3 h-100 cust-tertiary-50 cust-border-primary">
+    <h3 class="text-center cust-text-primary">@statusDisplayNames[(int)ITicket.TicketStatus.Inbound]<span style="vertical-align:middle; font-size:18px;" class="m-0 ml-1 p-0 pl-1 pr-1 text-center border cust-rounded cust-border-pyellow cust-bg-pyellow cust-text-secondary">@((inboundTickets != null) ? ( inboundTickets.Count()) : ("0"))</span></h3>
+    <hr class="cust-border-primary" />
+    <div class="pr-3 cust-monitor-container">
+        @if (department != null)
+        {
+            foreach (var ticket in inboundTickets)
+            {
+                <partial name="Tickets/_TicketCardViewPartial" model="ticket" />
+            }
+        }
+        else
+        {
+            <h2 class="text-center text-danger">Afdeling findes ikke!</h2>
+        }
+    </div>
+</div>
+<div style="overflow:hidden" class="d-none d-md-block d-lg-block col-md-6 col-lg-3 border-left cust-tertiary-50 cust-border-primary">
+    <h3 class="text-center cust-text-primary">@statusDisplayNames[(int)ITicket.TicketStatus.Ongoing]<span style="vertical-align:middle; font-size:18px;" class="m-0 ml-1 p-0 pl-1 pr-1 text-center border cust-rounded cust-border-pgreen cust-bg-pgreen cust-text-secondary">@((ongoingTickets != null) ? ( ongoingTickets.Count()) : ("0"))</span></h3>
+    <hr class="cust-border-primary" />
+    <div class="pr-3 cust-monitor-container">
+        @if (department != null)
+        {
+            foreach (var ticket in ongoingTickets)
+            {
+                <partial name="Tickets/_TicketCardViewPartial" model="ticket" />
+            }
+        }
+        else
+        {
+            <h2 class="text-center text-danger">Afdeling findes ikke!</h2>
+        }
+    </div>
+</div>
+<div style="overflow:hidden" class="d-none d-lg-block col-lg-3 border-left cust-tertiary-50 cust-border-primary">
+    <h3 class="text-center cust-text-primary">@statusDisplayNames[(int)ITicket.TicketStatus.Pending]<span style="vertical-align:middle; font-size:18px;" class="m-0 ml-1 p-0 pl-1 pr-1 text-center border cust-rounded cust-border-sblue cust-bg-sblue cust-text-secondary">@((pendingTickets != null) ? ( pendingTickets.Count()) : ("0"))</span></h3>
+    <hr class="cust-border-primary" />
+    <div class="pr-3 cust-monitor-container">
+        @if (department != null)
+        {
+            foreach (var ticket in pendingTickets)
+            {
+                <partial name="Tickets/_TicketCardViewPartial" model="ticket" />
+            }
+        }
+        else
+        {
+            <h2 class="text-center text-danger">Afdeling findes ikke!</h2>
+        }
+    </div>
+</div>
+<div style="overflow:hidden" class="d-none d-lg-block col-lg-3 border-left cust-tertiary-50 cust-border-primary">
+    <h3 class="text-center cust-text-primary">@statusDisplayNames[(int)ITicket.TicketStatus.Paused]<span style="vertical-align:middle; font-size:18px;" class="m-0 ml-1 p-0 pl-1 pr-1 text-center border cust-rounded cust-border-tertiary cust-bg-tertiary cust-text-secondary">@((pausedTickets != null) ? ( pausedTickets.Count()) : ("0"))</span></h3>
+    <hr class="cust-border-primary" />
+    <div class="pr-3 cust-monitor-container">
+        @if (department != null)
+        {
+            foreach (var ticket in pausedTickets)
+            {
+                <partial name="Tickets/_TicketCardViewPartial" model="ticket" />
+            }
+        }
+        else
+        {
+            <h2 class="text-center text-danger">Afdeling findes ikke!</h2>
+        }
+    </div>
+</div>

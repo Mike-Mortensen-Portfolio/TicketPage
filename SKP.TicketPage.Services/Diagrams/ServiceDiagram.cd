@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SKP.TicketPage.Services.TicketPageService" BaseTypeListCollapsed="true">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAABAACAAAAAAAAGAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TicketPageService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SKP.TicketPage.Services.CommentDTO" BaseTypeListCollapsed="true">
+    <Position X="1.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAgAAgAAAAAAAAQAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>DTOs\CommentDTO.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SKP.TicketPage.Services.DepartmentDTO" BaseTypeListCollapsed="true">
+    <Position X="3" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\DepartmentDTO.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SKP.TicketPage.Services.EmployeeDTO" BaseTypeListCollapsed="true">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAACAAgAAAAQAAAAAAAAAAAAAgAAAAAAAAAAg=</HashCode>
+      <FileName>DTOs\EmployeeDTO.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SKP.TicketPage.Services.TicketDTO" BaseTypeListCollapsed="true">
+    <Position X="1.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAUAAAggEAEAAAAAQAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\TicketDTO.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="SKP.TicketPage.Services.IComment">
+    <Position X="6.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAgAAgAAAAAAAAQAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>Interfaces\IComment.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SKP.TicketPage.Services.IDepartment">
+    <Position X="8.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IDepartment.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SKP.TicketPage.Services.IEmployee">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAACAAgAAAAQAAAAAAAAAAAAAgAAAAAAAAAAg=</HashCode>
+      <FileName>Interfaces\IEmployee.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SKP.TicketPage.Services.ITicket">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="SKP.TicketPage.Services.ITicket.TicketStatus" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Interfaces\ITicket.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="SKP.TicketPage.Services.ITicket.TicketPriority" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Interfaces\ITicket.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAUAAAggEAEAAAAAQAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\ITicket.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SKP.TicketPage.Services.ITicketPageService">
+    <Position X="6.75" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAACAAAAAAAAGAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\ITicketPageService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,26 @@
+﻿@page
+@using Microsoft.AspNetCore.Diagnostics
+@using SKP.TicketPage.Services
+@using System.Diagnostics
+@model ErrorModel
+@{
+    ViewData["Title"] = "Fejl";
+
+    Model.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
+    var exception = HttpContext.Features.Get<IExceptionHandlerFeature>();
+
+    string exceptionInfo = await Model.Logger.LogExceptionAsync(ILogEntry.Severity.Critical, exception.Error, Model.RequestId);
+}
+
+<h1 class="text-danger">Hov...</h1>
+<h2 class="text-danger">Det skete en fejl under behandlingen af din anmodning.</h2>
+<p>Kontakt sidens administrator, hvis det er kritisk eller fejlen fortsat opstår.</p>
+<hr />
+<p>Følgende informationer er nødvendige for administratoren for at kunne fejlsøge:</p>
+
+@if (Model.ShowRequestInformation)
+{
+    <p><strong>Request ID:</strong> <code>@Model.RequestId</code></p>
+    <p><strong>Error: <code>@(exceptionInfo ?? "Unknown Error")</code></strong></p>
+}

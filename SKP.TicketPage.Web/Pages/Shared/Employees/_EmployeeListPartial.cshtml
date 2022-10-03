@@ -1,0 +1,236 @@
+﻿@using SKP.TicketPage.Services
+@inject ITicketPageService service;
+@model Models.EmployeeListModel
+@{
+}
+
+<form method="post">
+    <partial name="Misc/_ConfirmationWindowPartial" model="@(new Shared.Misc.Models.ConfirmationWindowModel {Hide = true, IsWarning = true, AcceptHandler = "EmployeeDelete", DataInputName = "EmployeeID", Header = "Fjern Bruger?", SubHeader = $"Er du sikker på at du vil slette brugeren?"})" />
+</form>
+
+<form method="post" asp-page-handler="@Model.FilterHandler">
+    @if (!Model.HideFilter)
+    {
+        <!--Filter-->
+        <table class="m-0 p-0 table table-borderless">
+            <thead>
+                <tr>
+                    <th style="vertical-align:middle;" class="m-0 p-0 col-1 text-center">Filter:</th>
+                    <th class="m-0 p-0 col-4 text-center">
+                        @{
+                            if (!Model.LockHelper.SearchKeyLocked(Model.FilterLock))
+                            {
+                                <input id="@($"{Model.FilterPropertyName}_SearchKey")" name="@($"{Model.FilterPropertyName}.SearchKey")" class="form-control cust-border-box" type="text" placeholder="Søg..." value="@(Model.FilterOptions?.SearchKey)" />
+                            }
+                            else
+                            {
+                                <input id="@($"{Model.FilterPropertyName}_SearchKey")" name="@($"{Model.FilterPropertyName}.SearchKey")" disabled class="form-control cust-border-box" type="text" placeholder="Søg..." value="@(Model.FilterOptions?.SearchKey)" />
+                            }
+                        }
+                    </th>
+                    <th class="m-0 p-0 col-4 text-center">
+                        @{
+                            if (!Model.LockHelper.DepartmentLocked(Model.FilterLock))
+                            {
+                                IReadOnlyList<IDepartment> departments = await service.Department.GetAllAsync();
+                                <select id="@($"{Model.FilterPropertyName}_DepartmentID")" name="@($"{Model.FilterPropertyName}.DepartmentID")" class="form-control cust-border-box">
+                                    <option value="-1">Afdeling</option>
+                                    @if (departments != null && departments.Count > 0)
+                                    {
+                                        foreach (var department in departments)
+                                        {
+                                            if (Model.FilterOptions != null && Model.FilterOptions.DepartmentID == department.ID)
+                                            {
+                                                <option selected value="@department.ID">@((User.IsInRole(RoleHelper.DEVELOPER))?($" ID: {department.ID} | "):(string.Empty))@department.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@department.ID">@((User.IsInRole(RoleHelper.DEVELOPER))?($" ID: {department.ID} | "):(string.Empty))@department.Name</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <select disabled id="@($"{Model.FilterPropertyName}_DepartmentID")" name="@($"{Model.FilterPropertyName}.DepartmentID")" class="form-control cust-border-box">
+                                    <option value="-1">Afdeling</option>
+                                </select>
+                            }
+                        }
+                    </th>
+                    <th class="m-0 p-0 col-2 text-center">
+                        @{
+                            if (!Model.LockHelper.StatusLocked(Model.FilterLock))
+                            {
+                                <select id="@($"{Model.FilterPropertyName}_Active")" name="@($"{Model.FilterPropertyName}.Active")" class="form-control cust-border-box">
+                                    <option value="Invalid">Status</option>
+                                    @if (Model.FilterOptions != null && Model.FilterOptions.Active == "True")
+                                    {
+                                        <option class="cust-text-sgreen" selected value="True">Aktiv</option>
+                                        <option class="cust-text-pred" value="False">Inaktiv</option>
+                                    }
+                                    else if (Model.FilterOptions != null && Model.FilterOptions.Active == "False")
+                                    {
+                                        <option class="cust-text-sgreen" value="True">Aktiv</option>
+                                        <option class="cust-text-pred" selected value="False">Inaktiv</option>
+                                    }
+                                    else
+                                    {
+                                        <option class="cust-text-sgreen" value="True">Aktiv</option>
+                                        <option class="cust-text-pred" value="False">Inaktiv</option>
+                                    }
+
+                                </select>
+                            }
+                            else
+                            {
+                                <select disabled id="@($"{Model.FilterPropertyName}_Active")" name="@($"{Model.FilterPropertyName}.Active")" class="form-control cust-border-box">
+                                    <option value="Invalid">Status</option>
+                                </select>
+                            }
+                        }
+                    </th>
+                    <th class="m-0 p-0 col-2 text-center"><button asp-page-handler="@Model.FilterHandler" class="pl-4 pr-4 btn btn-success cust-border-box" type="submit">Filtrer</button></th>
+                </tr>
+            </thead>
+        </table>
+    }
+    <!--List View Begins here-->
+    <table id="@Model.TableID" class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                @if (User.IsInRole(RoleHelper.DEVELOPER))
+                {
+                    <th class="text-center col-1">ID</th>
+                }
+                <th class="text-center col-1">Status</th>
+                <th class="col-3">Navn</th>
+                <th class="col-3">Email</th>
+                <th class="col-2">Afdeling</th>
+                @if (!Model.HideSettings)
+                {
+                    <th class="text-center col-2">Indstillinger</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Employees != null)
+            {
+                var pagedEmployees = Model.Employees
+                .Skip((Model.UsePagination) ? ((Model.CurrentPage * Model.PageSize) - Model.PageSize) : (0))
+                .Take(((Model.UsePagination) ? (Model.PageSize) : (Model.Employees.Count)))
+                .ToList();
+
+                @foreach (var employee in pagedEmployees)
+                {
+                    <tr id="@employee.ID">
+                        @if (User.IsInRole(RoleHelper.DEVELOPER))
+                        {
+                            <td class="text-center">@employee.ID</td>
+                        }
+
+                        <td class="text-center @((@employee.Active)?("cust-text-sgreen"):("cust-text-pred"))">@((employee.Active) ?("Aktiv"):("Inaktiv"))</td>
+                        @{
+                            if (await employee.IsAdminAsync())
+                            {
+                                <td><a class="cust-text-primary" asp-area="Identity" asp-page="/Account/UserPage" asp-route-id="@employee.ID">@employee.FirstName @employee.LastName (<span class="text-muted">@((await service.Employee.GetRoleByNameAsync(await employee.GetRoleNameAsync())).DisplayName)</span>)</a></td>
+                            }
+                            else if (await employee.IsSystemAsync())
+                            {
+                                <td><p class="m-0 p-0 cust-text-primary">@employee.FirstName @employee.LastName (<span class="text-muted">System</span>)</p></td>
+                            }
+                            else
+                            {
+                                <td><a class="cust-text-primary" asp-area="Identity" asp-page="/Account/UserPage" asp-route-id="@employee.ID">@employee.FirstName @employee.LastName</a></td>
+                            }
+                        }
+
+                        <td>@employee.Email</td>
+                        @{
+                            IDepartment department = await employee.GetDepartment();
+                        }
+                        <td>@((User.IsInRole(RoleHelper.DEVELOPER))?($"ID: {department?.ID} | "):(string.Empty))@department?.Name</td>
+
+                        <!--Setting buttons-->
+                        @if (!Model.HideSettings)
+                        {
+                            <td class="text-center">
+                                @{
+                                    if (User.IsSuperUser() && !(await employee.IsSystemAsync()))
+                                    {
+                                        <button asp-page-handler="EmployeeEdit" asp-route-employeeID="@employee.ID" class="btn m-0 p-0"><span class="bi bi-pencil-fill cust-text-pblue" data-toggle="tooltip" data-placement="bottom" title="Ret"></span></button>
+                                    }
+                                    else
+                                    {
+                                        <p class="btn m-0 p-0"><span class="bi bi-pencil-fill cust-text-tertiary"></span></p>
+                                    }
+                                }
+
+                                @{
+                                    bool isDev = await service.Employee.IsInRoleAsync(employee.ID, RoleHelper.DEVELOPER);
+                                    if (!await employee.IsSystemAsync() && !await employee.IsSuperUserAsync() && (User.IsSuperUser() && !User.IsSelf(employee)))
+                                    {
+                                        bool isAdmin = await service.Employee.IsInRoleAsync(@employee.ID, RoleHelper.ADMIN);
+
+                                        <button asp-page-handler="EmployeePromote" asp-route-returnURL="@Model.ReturnURL" asp-route-employeeID="@employee.ID" class="btn m-0 p-0"><span class="bi @((!isAdmin)?("bi-person-bounding-box cust-text-sgreen"):("bi-person-fill cust-text-pred"))" data-toggle="tooltip" data-placement="bottom" title="@((!isAdmin)?("Forfrem"):("Degrader"))"></span></button>
+                                    }
+                                    else
+                                    {
+                                        <p class="btn m-0 p-0"><span class="bi bi-person-bounding-box cust-text-tertiary"></span></p>
+                                    }
+                                }
+                                @if (await employee.GetDepartment() != null && !(await employee.IsSystemAsync()) && User.IsSuperUser() && !User.IsSelf(employee))
+                                {
+                                    <button asp-page-handler="EmployeeActivate" asp-route-returnURL="@Model.ReturnURL" asp-route-employeeID="@employee.ID" class="btn m-0 p-0">
+                                        <span class="bi @((employee.Active)?("bi-person-dash-fill cust-text-pred"):("bi-person-check-fill cust-text-sgreen"))" data-toggle="tooltip" data-placement="bottom" title="@((employee.Active)?("Deaktiver"):("Aktiver"))"></span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <p class="btn m-0 p-0"><span class="bi bi-person-dash-fill cust-text-tertiary"></span></p>
+                                }
+
+                                @{
+                                    //  Users with tickets or comments may not be deleted. This is pr. request from client!
+                                    bool hasTickets = (await employee.GetOwnedTicketsAsync())?.Count > 0;
+                                    bool hasComments = (await employee.GetCommentsAsync())?.Count > 0;
+
+                                    if (User.IsSuperUser() && !(await employee.IsSystemAsync()) && !User.IsSelf(employee) && !(hasTickets || hasComments))
+                                    {
+                                        <button onclick="triggerConfWindow(this,'popup','employeeID','employeeID')" type="button" data-employeeID="@employee.ID" class="btn m-0 p-0"><span class="bi bi-person-x-fill cust-text-pred" data-toggle="tooltip" data-placement="bottom" title="Slet"></span></button>
+                                    }
+                                    else
+                                    {
+                                        <p class="btn m-0 p-0"><span class="bi bi-person-x-fill cust-text-tertiary"></span></p>
+                                    }
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    @if (Model.UsePagination && Model.Employees != null && Model.Employees.Count > Model.PageSize)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        @{
+                            Model.PageCount = (int)MathF.Ceiling((float)(Model.Employees.Count / (float)((Model.PageSize != 0) ? (Model.PageSize) : (1))));
+                            var pageList = new List<SelectListItem>();
+                            @for (var i = 0; i < Model.PageCount; i++)
+                            {
+                                pageList.Add(new SelectListItem { Text = (i + 1).ToString(), Value = (i + 1).ToString(), Selected = (i == Model.CurrentPage) });
+                            }
+                        }
+                        @Html.DropDownListFor((m=> m.CurrentPage), pageList,  new { @class = "form-control cust-border-box text-center", @onchange="this.form.submit()" })
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    }
+</form>
