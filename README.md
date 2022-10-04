@@ -12,7 +12,7 @@ A port from MVC and pure SQL to Razor Pages and EFCore. The project is written f
 **TicketPage** must be put up as `Https` otherwise **SSO** won't work as intended. Local sign in will still work, though.
 **Docker support** should be enabled but was only testet in an earlier version (_[7183d661](https://git.pcsyd.dk/Opgaveside/OpgavesideV2/-/commit/7183d66105d58fcbaa91a49f5483c4a41e02acca)_).
 
-**Note:** SSO won't work as the system was ment to run in a specific environment. Local Sign-in should still work.
+**Note:** SSO won't work as the system was ment to run in a specific environment. However, it should be possible to inject an `WSFederation` host if that host matches the configuration of the old environment. This is, although, just a theory as no tests has been performed to verify it. Local Sign-in should still work.
 
 ## Dependencies
 - **Domain**
