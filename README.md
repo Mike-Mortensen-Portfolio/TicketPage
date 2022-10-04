@@ -12,6 +12,8 @@ A port from MVC and pure SQL to Razor Pages and EFCore. The project is written f
 **TicketPage** must be put up as `Https` otherwise **SSO** won't work as intended. Local sign in will still work, though.
 **Docker support** should be enabled but was only testet in an earlier version (_[7183d661](https://git.pcsyd.dk/Opgaveside/OpgavesideV2/-/commit/7183d66105d58fcbaa91a49f5483c4a41e02acca)_).
 
+**Note:** SSO won't work as the system was ment to run in a specific environment. Local Sign-in should still work.
+
 ## Dependencies
 - **Domain**
   - [Microsoft.AspNetCore.Identity.EntityFrameworkCore (_5.0.13_)](https://www.nuget.org/packages/Microsoft.AspNetCore.Identity.EntityFrameworkCore/5.0.13)
