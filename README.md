@@ -1,6 +1,8 @@
 # Introduction
 A port from MVC and pure SQL to Razor Pages and EFCore. The project is written from scratch and serves as the 3rd verison of **Opgaveside**.
 
+**Note:** As the system was written for a specific environment and uploaded 'as is' to GitHub there's several links still embedded both in documentation and possibly also in the code. **TicketPage** is meant to demonstrate my capabilities as a programmer (_Code-wise_) and not necessarily be a fully functional program.
+
 # Project Details
 | Platform       | GUI         | Timeframe | Database Solution                   |
 |----------------|-------------|-----------|-------------------------------------|
